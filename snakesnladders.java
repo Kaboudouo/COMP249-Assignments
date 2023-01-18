@@ -17,7 +17,7 @@ public class snakesnladders {
     public static void play(int player_count){
         System.out.println("Now deciding player order...");
 
-        int attempt_count = 5;
+        int attempt_count = 1;
         boolean p1_first;
         while(true){
             int player1_roll = flipDice();
