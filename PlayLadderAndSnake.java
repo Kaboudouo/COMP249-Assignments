@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // -----------------------------------------------------
 // Assignment 1
@@ -59,6 +58,7 @@ class LadderAndSnake {
         }
     }
 
+    // Returns true if tile has either a snake head or ladder foot
     private boolean hasEvent(int[] src, int eventNum){
         for (int element : src){
             if (element == eventNum){
@@ -72,12 +72,14 @@ class LadderAndSnake {
         
     }
 
+    //Handles roll priority and player order
     private void checkRoll(){
         while(true){
             int high = 0;
             int repeatHigh = 0;
             Player leadPlayer = new Player("Error Destroyer");
     
+            // Checks highest dice roll and looks for ties
             for (Player player : players){
                 if (high < player.currentRoll){
                     leadPlayer = player;
@@ -89,6 +91,7 @@ class LadderAndSnake {
                 }
             }
     
+            // If a tie occurs for the highest roll, returns and re-rolls.
             if (repeatHigh > 0){
                 int textIteration = 0;
                 System.out.print("A " + Integer.toString(repeatHigh + 1) + " way tie has been achieved between ");
@@ -105,6 +108,7 @@ class LadderAndSnake {
                 }
                 return;
             } else{
+                // If no ties for highest roll, player is next in order, continue for remaining players.
                 orderedPlayers.add(leadPlayer);
                 players.remove(leadPlayer);
                 if (players.size() == 1){
@@ -150,6 +154,9 @@ class LadderAndSnake {
         System.out.println(". It took " + attempt_count + " attempts before a decision could be made.");
 
         // Game Logic
+        //
+        //
+        // -----------------------
     }
 
     // Default Constructor
