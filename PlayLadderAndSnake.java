@@ -21,29 +21,37 @@ class Player{
 }
 
 class Tiles{
-    public Player currentPlayer;
-    public boolean hasSnake;
-    public boolean hasLadder;
-    public int tileNumber;
+    // Tile Number of Each Event (Corresponds to Fig.1 Board)
+    private int[] snakeHeads =  {16, 48, 64, 79, 93, 95, 97, 98};
+    private int[] snakeFoots =  {6,  30, 60, 19, 68, 24, 76, 78};
+    private int[] ladderFoots = {1,  4,  9,  21, 28, 36, 51, 71, 80};
+    private int[] ladderHeads = {38, 14, 31, 42, 84, 44, 67, 91, 100};
 
-    public int[] tileIdx(int _tileNum){
-        int[] idx = new int[2];
-        for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 10; j++){
-                if (tileNumber == _tileNum){
-                    idx[0] = i;
-                    idx[1] = j;
-                }
+    public Player currentPlayer;
+    public int tileNumber;
+    public int snakeHead;
+    public int snakeFoot;
+    public int ladderHead;
+    public int ladderFoot;
+
+
+    public Tiles (int _tileNumber){
+        currentPlayer = null;
+        tileNumber = _tileNumber;
+
+        for (int i = 0; i < snakeHeads.length; i++){
+            if (snakeHeads[i] == tileNumber){
+                snakeHead = snakeHeads[i];
+                snakeFoot = snakeFoots[i];
             }
         }
-        return idx;
-    }
 
-    public Tiles (boolean _hasSnake, boolean _hasLadder, int _tileNumber){
-        currentPlayer = null;
-        hasSnake = _hasSnake;
-        hasLadder = _hasLadder;
-        tileNumber = _tileNumber;
+        for (int i = 0; i < ladderHeads.length; i++){
+            if (ladderFoots[i] == tileNumber){
+                ladderHead = ladderHeads[i];
+                ladderFoot = ladderFoots[i];
+            }
+        }
     }
 
 }
@@ -53,13 +61,6 @@ class LadderAndSnake {
     public Tiles[][] tiles = new Tiles[10][10];
     public ArrayList<Player> players;
     public ArrayList<Player> orderedPlayers;
-
-    // Tile Number of Each Event (Corresponds to Fig.1 Board)
-    private int[] snakeHeads =  {16, 48, 64, 79, 93, 95, 97, 98};
-    private int[] snakeFoots =  {6,  30, 60, 19, 68, 24, 76, 78};
-    private int[] ladderFoots = {1,  4,  9,  21, 28, 36, 51,  71, 80};
-    private int[] ladderHeads = {38, 14, 31, 42, 84, 44, 67, 91, 100};
-
     public int turnCount = 0;
 
     // Sets Number For Each Tile
@@ -68,19 +69,22 @@ class LadderAndSnake {
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
                 tileNum = (i+1) + j*10;
-                tiles[i][j] = new Tiles(hasEvent(snakeHeads, tileNum), hasEvent(ladderFoots, tileNum), tileNum);
+                tiles[i][j] = new Tiles(tileNum);
             }
         }
     }
 
-    // Returns true if tile has either a snake head or ladder foot
-    private boolean hasEvent(int[] src, int eventNum){
-        for (int element : src){
-            if (element == eventNum){
-                return true;
+    private int[] tileIdx(int _tileNum){
+        int[] idx = new int[2];
+        for (int i = 0; i < 10; i++){
+            for (int j = 0; j < 10; j++){
+                if (tiles[i][j].tileNumber == _tileNum){
+                    idx[0] = i;
+                    idx[1] = j;
+                }
             }
         }
-        return false;
+        return idx;
     }
 
     private void movePlayer(Player player){
@@ -92,23 +96,21 @@ class LadderAndSnake {
             player.position = 200 - player.position;
         }
         
-        for(int i = 0; i < snakeHeads.length; i++){
-            if (player.position == snakeHeads[i]){
-                player.position = snakeFoots[i];
-                System.out.print(player.name + " has folled a " + player.currentRoll + " but landed on a snake!;");
-                System.out.println(" ssssslid from " + snakeHeads[i] + " to " + player.position +  ".");
-                return;
-            }
+        int i = tileIdx(player.position)[0];
+        int j = tileIdx(player.position)[1];
+
+        if (player.position == tiles[i][j].snakeHead){
+            
         }
 
-        for (int i = 0; i < ladderFoots.length; i++){
-            if (player.position == ladderFoots[i]){
-                player.position = ladderHeads[i];
-                System.out.print(player.name + " has folled a " + player.currentRoll + " and found a ladder!");
-                System.out.println(" climbed from " + ladderFoots[i] + " to " + player.position + ".");
-                return;
-            }
+        if (tiles[i][j].currentPlayer == null){
+            tiles[i][j].currentPlayer = player;
+        } else{
+            System.out.println("You just kicked " + tiles[i][j].currentPlayer.name + " out! That must hurt...");
+            tiles[i][j].currentPlayer.position = 0;
+            tiles[i][j].currentPlayer = player;
         }
+
 
         System.out.println(player.name + " has folled a " + player.currentRoll + "; went from " + lastPos + " to " + player.position + ".");  
     }
@@ -202,12 +204,12 @@ class LadderAndSnake {
             for (Player player : orderedPlayers){
                 player.currentRoll = flipDice();
                 movePlayer(player);
+            }
 
-                if(player.position == 100){
-                    System.out.println(player.name + " has reached the 100th square!");
-                    System.out.println("Congratulations " + player.name + "!\n------------------------------\nThank you for playing Kab's amazing Snakes&Ladders.");
-                    System.exit(0);
-                }
+            if(tiles[9][9].currentPlayer != null){
+                System.out.println(tiles[9][9].currentPlayer + " has reached the 100th square!");
+                System.out.println("Congratulations " + tiles[9][9].currentPlayer + "!\n------------------------------\nThank you for playing Kab's amazing Snakes&Ladders.");
+                System.exit(0);
             }
         }
 
