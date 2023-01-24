@@ -90,29 +90,41 @@ class LadderAndSnake {
     private void movePlayer(Player player){
 
         int lastPos = player.position;
+        
+        int i = tileIdx(lastPos)[0];
+        int j = tileIdx(lastPos)[1];
+
+        // Clears Tile Player Before Moving
+        tiles[i][j].currentPlayer = null;
+
         player.position += player.currentRoll;
+
+        i = tileIdx(player.position)[0];
+        j = tileIdx(player.position)[1];
 
         if (player.position > 100){
             player.position = 200 - player.position;
         }
-        
-        int i = tileIdx(player.position)[0];
-        int j = tileIdx(player.position)[1];
 
         if (player.position == tiles[i][j].snakeHead){
-            
+            player.position = tiles[i][j].snakeFoot;
+            System.out.print(player.name + " has rolled a " + player.currentRoll + " but landed on a snake!;");
+            System.out.println(" Ssssslides from " + tiles[i][j].snakeHead + " to " + player.position +  ".");
+        } else if (player.position == tiles[i][j].ladderFoot){
+            player.position = tiles[i][j].ladderHead;
+            System.out.print(player.name + " has rolled a " + player.currentRoll + " and found a ladder!");
+            System.out.println(" Climbes from " + tiles[i][j].ladderFoot + " to " + player.position + ".");
+        } else{
+            System.out.println(player.name + " has rolled a " + player.currentRoll + ". Went from " + lastPos + " to " + player.position + ".");  
         }
 
-        if (tiles[i][j].currentPlayer == null){
+        if (tiles[i][j].currentPlayer == null || tiles[i][j].currentPlayer == player){
             tiles[i][j].currentPlayer = player;
         } else{
-            System.out.println("You just kicked " + tiles[i][j].currentPlayer.name + " out! That must hurt...");
+            System.out.println( player.name + " just kicked " + tiles[i][j].currentPlayer.name + " out! That must hurt...");
             tiles[i][j].currentPlayer.position = 0;
             tiles[i][j].currentPlayer = player;
         }
-
-
-        System.out.println(player.name + " has folled a " + player.currentRoll + "; went from " + lastPos + " to " + player.position + ".");  
     }
 
     //Handles roll priority and player order
