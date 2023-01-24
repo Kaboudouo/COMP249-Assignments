@@ -91,7 +91,7 @@ class LadderAndSnake {
     }
 
     private void movePlayer(Player player){
-
+        String[] kickMsg = {"That must hurt...", "Revenge shall be sweet.", "Unluckers.", "Here we go again...", "Fate works in mysterious ways.", "Still winnable though."};
         int lastPos = player.position;
         
         int i = tileIdx(lastPos)[0];
@@ -132,7 +132,7 @@ class LadderAndSnake {
         if (tiles[i][j].currentPlayer == null || tiles[i][j].currentPlayer == player){
             tiles[i][j].currentPlayer = player;
         } else{
-            System.out.println( player.name + " just kicked " + tiles[i][j].currentPlayer.name + " out! That must hurt...");
+            System.out.println( player.name + " just kicked " + tiles[i][j].currentPlayer.name + " out! " + kickMsg[flipDice()-1]);
             tiles[i][j].currentPlayer.position = 0;
             tiles[i][j].currentPlayer = player;
         }
@@ -236,7 +236,7 @@ class LadderAndSnake {
             // Game is over when final tile is not empty. The player occupying that tile is obviously the winner.
             if(tiles[9][9].currentPlayer != null){
                 System.out.println(tiles[9][9].currentPlayer.name + " has reached the 100th square!");
-                System.out.println("\nCongratulations " + tiles[9][9].currentPlayer.name + "!\n-------------------------------------\nThank you for playing Kab's amazing Snakes&Ladders.");
+                System.out.println("\nCongratulations " + tiles[9][9].currentPlayer.name + "!\n-------------------------------------\nThank you for playing Kab's amazing Snakes & Ladders.");
                 System.exit(0);
             }
         }
@@ -264,18 +264,18 @@ public class PlayLadderAndSnake {
         Scanner input = new Scanner(System.in);
         int player_count;
 
-        System.out.print("Welcome to Snakes and Ladders. Pleaser enter the number of players: ");
+        System.out.print("Welcome to Kab's Amazing Snakes & Ladders. Please enter the number of players: ");
 
         if (!input.hasNextInt()){
             System.out.println("Error. Please input a valid integer. Game will now exit.");
             System.exit(0);
         }
-
         player_count = input.nextInt();
 
+        System.out.println();
         if (player_count > 2){
             System.out.println("Initialization was attempted for " + player_count + " players; however, this is only expected for an extended version the game. Value will be set to 2.");
-            System.out.print("Pssst, I only needed to say that out of obligation. Would you like to play with " + player_count + " players? (y/n): ");
+            System.out.print("\nPssst, I only needed to say that out of obligation. Would you like to play with " + player_count + " players? (y/n): ");
             while(true){
                 String answer = input.next();
                 if (answer.equals("y")){
@@ -286,7 +286,7 @@ public class PlayLadderAndSnake {
                     player_count = 2;
                     break;
                 } else{
-                    System.out.println("That's not a valid input. Please response with y/n.");
+                    System.out.print("That's not a valid input. Please response with y/n: ");
                     continue;
                 }
             }
@@ -298,9 +298,11 @@ public class PlayLadderAndSnake {
         }
 
         // Naming Logic
+        System.out.println();
         String[] playerNames = new String[player_count];
         System.out.print("Would you like to give the players names? (y/n): ");
         String answer = input.next();
+        System.out.println("");
 
         for (int i = 0; i < player_count; i++){
             if (answer.equals("y")){
