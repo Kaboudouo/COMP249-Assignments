@@ -99,12 +99,13 @@ class LadderAndSnake {
 
         player.position += player.currentRoll;
 
-        i = tileIdx(player.position)[0];
-        j = tileIdx(player.position)[1];
-
         if (player.position > 100){
             player.position = 200 - player.position;
+            System.out.println(player.name + " overshot it.");
         }
+
+        i = tileIdx(player.position)[0];
+        j = tileIdx(player.position)[1];
 
         if (player.position == tiles[i][j].snakeHead){
             player.position = tiles[i][j].snakeFoot;
@@ -117,6 +118,9 @@ class LadderAndSnake {
         } else{
             System.out.println(player.name + " has rolled a " + player.currentRoll + ". Went from " + lastPos + " to " + player.position + ".");  
         }
+
+        i = tileIdx(player.position)[0];
+        j = tileIdx(player.position)[1];
 
         if (tiles[i][j].currentPlayer == null || tiles[i][j].currentPlayer == player){
             tiles[i][j].currentPlayer = player;
@@ -209,7 +213,7 @@ class LadderAndSnake {
         System.out.println(". It took " + attempt_count + " attempts before a decision could be made.");
 
         // Game Logic
-        System.out.println("------------------------------------\n     The Game Will Now Start     \n------------------------------------");
+        System.out.println("\n------------------------------------\n     The Game Will Now Start     \n------------------------------------");
         while(true){
             turnCount++;
             System.out.println("\n---------------Turn " + turnCount + "---------------");
@@ -219,12 +223,11 @@ class LadderAndSnake {
             }
 
             if(tiles[9][9].currentPlayer != null){
-                System.out.println(tiles[9][9].currentPlayer + " has reached the 100th square!");
-                System.out.println("Congratulations " + tiles[9][9].currentPlayer + "!\n------------------------------\nThank you for playing Kab's amazing Snakes&Ladders.");
+                System.out.println(tiles[9][9].currentPlayer.name + " has reached the 100th square!");
+                System.out.println("\nCongratulations " + tiles[9][9].currentPlayer.name + "!\n-----------------      -------------\nThank you for playing Kab's amazing Snakes&Ladders.");
                 System.exit(0);
             }
         }
-
     }
 
     // Default Constructor
@@ -262,13 +265,13 @@ public class PlayLadderAndSnake {
         System.out.println("\n");
 
         // Comment this block for more than 2 players
-        // if (player_count > 2){
-        //     System.out.println("Initialization was attempted for " + player_count + " players; however, this is only expected for an extended version the game. Value will be set to 2");
-        //     player_count = 2;
-        // } else if (player_count < 2){
-        //     System.out.println("Error: Cannot execute the game with less than 2 players! Will exit.");
-        //     System.exit(0);
-        // }
+        if (player_count > 2){
+            System.out.println("Initialization was attempted for " + player_count + " players; however, this is only expected for an extended version the game. Value will be set to 2");
+            player_count = 2;
+        } else if (player_count < 2){
+            System.out.println("Error: Cannot execute the game with less than 2 players! Will exit.");
+            System.exit(0);
+        }
 
         LadderAndSnake GameBoard = new LadderAndSnake(player_count);
         GameBoard.play();
