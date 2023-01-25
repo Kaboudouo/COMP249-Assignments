@@ -1,6 +1,13 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.awt.Color;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 // -----------------------------------------------------
 // Assignment 1
@@ -64,6 +71,10 @@ class LadderAndSnake {
     public ArrayList<Player> players;
     public ArrayList<Player> orderedPlayers;
     public int turnCount = 0;
+
+    public ArrayList<Player> getPlayers(){
+        return this.orderedPlayers;
+    }
 
     // Sets Number For Each Tile
     private void initializeBoard(){
@@ -223,6 +234,15 @@ class LadderAndSnake {
         }
         System.out.println(". It took " + attempt_count + " attempt(s) before a decision could be made.");
 
+        // UI Rendering
+        gui GUI = new gui();
+        GUI.drawPlayer(orderedPlayers.get(0));
+
+        PlayLadderAndSnake.frame.invalidate();
+        PlayLadderAndSnake.frame.validate();
+        PlayLadderAndSnake.frame.repaint();
+
+
         // Game Logic
         System.out.println("\n------------------------------------\n      The Game Will Now Start     \n------------------------------------");
         while(true){
@@ -237,7 +257,7 @@ class LadderAndSnake {
             if(tiles[9][9].currentPlayer != null){
                 System.out.println(tiles[9][9].currentPlayer.name + " has reached the 100th square!");
                 System.out.println("\nCongratulations " + tiles[9][9].currentPlayer.name + "!\n-------------------------------------\nThank you for playing Kab's amazing Snakes & Ladders.");
-                System.exit(0);
+                //System.exit(0);
             }
         }
     }
@@ -259,8 +279,46 @@ class LadderAndSnake {
     }
 }
 
-public class PlayLadderAndSnake {
+public class PlayLadderAndSnake extends JFrame{
+
+    public static JFrame frame = new JFrame();
+
+    public PlayLadderAndSnake(){
+        add(new gui());
+
+        int width = 800;
+        int height = 600;
+
+        setSize(width, height);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
     public static void main(String[] args){
+        //new PlayLadderAndSnake();
+
+
+        ImageIcon image = new ImageIcon("rsc/board.png");
+        Border border = BorderFactory.createLineBorder(Color.green, 4);
+
+        JLabel label = new JLabel();
+        label.setIcon(image);
+        label.setBackground(Color.black);
+        label.setOpaque(true);
+        label.setBorder(border);
+        label.setVerticalAlignment(JLabel.CENTER);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setBounds(0, 0, 250, 250);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.add(label);
+
+        //frame.pack();
+
+
         Scanner input = new Scanner(System.in);
         int player_count;
 
