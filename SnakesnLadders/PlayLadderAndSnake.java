@@ -120,7 +120,7 @@ class LadderAndSnake {
         } else if (player.position == tiles[i][j].ladderFoot){
             player.position = tiles[i][j].ladderHead;
             System.out.print(player.name + " has rolled a " + player.currentRoll + " and found a ladder!");
-            System.out.println(" Climbes from " + tiles[i][j].ladderFoot + " to " + player.position + ".");
+            System.out.println(" Climbs from " + tiles[i][j].ladderFoot + " to " + player.position + ".");
         } else{
             System.out.println(player.name + " has rolled a " + player.currentRoll + ". Went from " + lastPos + " to " + player.position + ".");  
         }
