@@ -5,8 +5,9 @@ import java.util.ArrayList;
 
 // -----------------------------------------------------
 // Assignment 1
-// Question 1 Part 1
+// Question 1
 // Written by: Noa Chayer 40223439
+// Due: Febuary 03 2023
 // -----------------------------------------------------
 
 // Player objects are created for ease of access
@@ -91,6 +92,7 @@ class LadderAndSnake {
         return idx;
     }
 
+    // Handles All Normal Movement, Events, and Tile Overflow
     private void movePlayer(Player player){
         String[] kickMsg = {"That must hurt...", "Revenge shall be sweet.", "Unluckers.", "Here we go again...", "Fate works in mysterious ways.", "Still winnable though."};
         int lastPos = player.position;
