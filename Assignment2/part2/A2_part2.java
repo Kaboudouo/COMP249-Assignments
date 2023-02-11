@@ -7,11 +7,20 @@ import Assignment2.part2.Train.*;
 import Assignment2.part2.Wheeled.WheeledTransportation;
 import Assignment2.part2.Aircraft.Aircraft;
 
+// -----------------------------------------------------
+// Assignment 2
+// Part 2
+// Written by: Noa Chayer 40223439
+// Due: Febuary 24 2023
+// -----------------------------------------------------
+
 public class A2_part2{
 
+    // Returns a copy of the passed array, using class constructors
     static Object[] copyTheObjects(Object[] vehicles){
         Object[] copyArr = new Object[vehicles.length];
 
+        // Tries to construct passed objects in inverted fashion (See doc.txt)
         for (int i = 0; i < vehicles.length; i++){
             try {copyArr[i] = new Ferry(vehicles[i]); continue;} catch(Exception e){}
             try {copyArr[i] = new WW2Airplane(vehicles[i]); continue;} catch(Exception e){}
@@ -67,6 +76,7 @@ public class A2_part2{
         }
         System.out.println("\nArray Identifier: " + copiedArr);
 
+        // Additional Equality Testing
         System.out.println("\n\nChecking All Equalities (Expected: 'n' true returns):");
         for (int i = 0; i < copiedArr.length; i++){
             System.out.println(arr[i].equals(copiedArr[i]));

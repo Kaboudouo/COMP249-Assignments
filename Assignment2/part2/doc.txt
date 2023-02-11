@@ -1,6 +1,6 @@
 The copyTheObjects function works as intended.
 
-1. The function starts by initalizing a new Object array to be return of size [passed_array].length
+1. The function starts by initalizing a new Object array to be returned of size [passed_array].length
 2. Each class have had their copy constructors modified to accept general Objects rather than Objects of their own class.
 3. It then loops trough each index of the return array and TRIES to create a new object of every class.
 
