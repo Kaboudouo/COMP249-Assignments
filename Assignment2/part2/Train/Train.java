@@ -20,7 +20,8 @@ public class Train extends WheeledTransportation{
         desStation = _desStation;
     }
 
-    public Train(Train clone){
+    public Train(Object _clone){
+        Train clone = (Train)_clone;
         wheelCount = clone.wheelCount;
         maxSpeed = clone.maxSpeed;
         vehicleCount = clone.vehicleCount;

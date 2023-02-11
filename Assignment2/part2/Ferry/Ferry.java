@@ -17,7 +17,8 @@ public class Ferry{
         maxLoad = _maxLoad;
     }
 
-    public Ferry(Ferry clone){
+    public Ferry(Object _clone){
+        Ferry clone = (Ferry)_clone;
         maxSpeed = clone.maxSpeed;
         maxLoad = clone.maxLoad;
     }

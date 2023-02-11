@@ -14,7 +14,8 @@ public class Tram extends Metro{
         yrCreation = _yrCreation;
     }
 
-    public Tram(Tram clone){
+    public Tram(Object _clone){
+        Tram clone = (Tram)_clone;
         yrCreation = clone.yrCreation;
         stopCount = clone.stopCount;
         wheelCount = clone.wheelCount;

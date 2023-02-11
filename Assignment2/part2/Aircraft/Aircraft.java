@@ -14,7 +14,8 @@ public class Aircraft {
         maxElevation = _maxElevation;
     }
 
-    public Aircraft(Aircraft clone){
+    public Aircraft(Object _clone){
+        Aircraft clone = (Aircraft)_clone;
         price = clone.price;
         maxElevation = clone.maxElevation;
     }

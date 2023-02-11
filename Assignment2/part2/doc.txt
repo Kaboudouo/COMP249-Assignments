@@ -1,0 +1,115 @@
+The copyTheObjects function works as intended.
+
+1. The function starts by initalizing a new Object array to be return of size [passed_array].length
+2. Each class have had their copy constructors modified to accept general Objects rather than Objects of their own class.
+3. It then loops trough each index of the return array and TRIES to create a new object of every class.
+
+    try {copyArr[i] = new {CLASSNAME}(vehicles[i]); continue;} catch(Exception e){}
+
+These try-catch pairs need to be ordered in an inverted fashion relative to the class hierarchies. Otherwise, the superclass will absorb any subclass objects:
+
+Example: Non-Inverted
+    try {copyArr[i] = new WheeledTransportation(vehicles[i]); continue;} catch(Exception e){}
+    try {copyArr[i] = new Train(vehicles[i]); continue;} catch(Exception e){}
+
+    Input:
+        Object[] arr = {WheeledTransportation1, train1};
+
+    Expected toString Output:
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+
+    Actual toString Output:
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s).
+
+    As we can see, the train object, being a subclass product of WheeledTransportation, is instantiated as a WheeledTransportation object, truncating subclass specific data.
+
+
+Example: Inverted
+    try {copyArr[i] = new Metro(vehicles[i]); continue;} catch(Exception e){}
+    try {copyArr[i] = new Train(vehicles[i]); continue;} catch(Exception e){}
+    try {copyArr[i] = new WheeledTransportation(vehicles[i]); continue;} catch(Exception e){}
+
+    Input:
+        Object[] arr = {WheeledTransportation1, metro1, train1};
+
+    Expected toString Output:
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+        This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Montmorency to Cote Vertu. Given its form, it is a metro with 31 stop(s).
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+
+    Actual toString Output:
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+        This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Montmorency to Cote Vertu. Given its form, it is a metro with 31 stop(s).
+        This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+
+    As the sublass object instantiation is being tested first, there is no risk of superclass absorption.
+
+
+Input:
+    Object[] arr = {ferry1, ferry2, plane1, plane2, bomber, fighter, wheeled1, wheeled2, mono1, mono2, train1, train2, orange, green, tram1, tram2};
+
+Output:
+    Existing Object Array toString:
+
+    This Ferry has a maximum speed of 10.0km/h, and has a maximum load capacity of 100.0kg.
+    This Ferry has a maximum speed of 120.0km/h, and has a maximum load capacity of 800.0kg.
+    This Aircraft costs $9.99, and has a maximum elevation of 1250.0m.
+    This Aircraft costs $29000.0, and has a maximum elevation of 1800.0m.
+    This Aircraft costs $8000.0, and has a maximum elevation of 800.0m. It's a WW2 Airplane that has a twin engine.
+    This Aircraft costs $9.99, and has a maximum elevation of 1250.0m. It's a WW2 Airplane that does not have a twin engine.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). Being a monowheel, it has a maximum weight load of 350.0kg.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). Being a monowheel, it has a maximum weight load of 350.0kg.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+    This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Montmorency to Cote Vertu. Given its form, it is a metro with 31 stop(s).
+    This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Angrigon to Honore Beaugrand. Given its form, it is a metro with 29 stop(s).        
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). It's a train that has 1 vehicle(s), and is going from Montreal to Vancouver. Given its form, it is a metro with 5 stop(s). However, it is 
+    technically a tram and was created in 1984.
+    This Wheeled Transportation has a maximum speed of 20.0km/h, and has 6 wheel(s). It's a train that has 2 vehicle(s), and is going from NDG to Westmount. Given its form, it is a metro with 8 stop(s). However, it is technically a tram and was created in 1999.
+
+
+    Copy of Said Array toString:
+
+    This Ferry has a maximum speed of 10.0km/h, and has a maximum load capacity of 100.0kg.
+    This Ferry has a maximum speed of 120.0km/h, and has a maximum load capacity of 800.0kg.
+    This Aircraft costs $9.99, and has a maximum elevation of 1250.0m.
+    This Aircraft costs $29000.0, and has a maximum elevation of 1800.0m.
+    This Aircraft costs $8000.0, and has a maximum elevation of 800.0m. It's a WW2 Airplane that has a twin engine.
+    This Aircraft costs $9.99, and has a maximum elevation of 1250.0m. It's a WW2 Airplane that does not have a twin engine.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s).
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). Being a monowheel, it has a maximum weight load of 350.0kg.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). Being a monowheel, it has a maximum weight load of 350.0kg.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 12 wheel(s). It's a train that has 10 vehicle(s), and is going from San Fransico to Portland.
+    This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Montmorency to Cote Vertu. Given its form, it is a metro with 31 stop(s).
+    This Wheeled Transportation has a maximum speed of 30.0km/h, and has 8 wheel(s). It's a train that has 10 vehicle(s), and is going from Angrigon to Honore Beaugrand. Given its form, it is a metro with 29 stop(s).
+    This Wheeled Transportation has a maximum speed of 80.0km/h, and has 16 wheel(s). It's a train that has 1 vehicle(s), and is going from Montreal to Vancouver. Given its form, it is a metro with 5 stop(s). However, it is 
+    technically a tram and was created in 1984.
+    This Wheeled Transportation has a maximum speed of 20.0km/h, and has 6 wheel(s). It's a train that has 2 vehicle(s), and is going from NDG to Westmount. Given its form, it is a metro with 8 stop(s). However, it is technically a tram and was created in 1999.
+
+
+Additional Equality Testing
+>   System.out.println(arr[i].equals(copiedArr[i])); // Expected Output is 'n' lines of true values
+
+Output:
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true
+    true

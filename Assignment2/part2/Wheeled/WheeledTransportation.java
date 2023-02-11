@@ -14,7 +14,8 @@ public class WheeledTransportation {
         maxSpeed = _maxSpeed;
     }
 
-    public WheeledTransportation(WheeledTransportation clone){
+    public WheeledTransportation(Object _clone){
+        WheeledTransportation clone = (WheeledTransportation)_clone;
         wheelCount = clone.wheelCount;
         maxSpeed = clone.maxSpeed;
     }

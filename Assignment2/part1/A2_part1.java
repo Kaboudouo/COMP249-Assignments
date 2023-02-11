@@ -83,8 +83,6 @@ public class A2_part1{
         System.out.println(tram1.toString());
         System.out.println(tram2.toString());
 
-        System.out.println(plane1.getClass().getSimpleName());
-
         System.out.println("\nThe idea that Monowheel 'mono1' and 'mono2' are equal is " + mono1.equals(mono2));
         System.out.println("The idea that Metro 'orange' and 'green' are equal is " + orange.equals(green));
         System.out.println("The idea that Ferry 'ferry2' and Aircraft 'plane1' are equal is " + ferry2.equals(plane1));

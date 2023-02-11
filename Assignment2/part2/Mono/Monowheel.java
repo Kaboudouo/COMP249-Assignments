@@ -14,7 +14,8 @@ public class Monowheel extends WheeledTransportation{
         maxWeight = _maxWeight;
     }
 
-    public Monowheel(Monowheel clone){
+    public Monowheel(Object _clone){
+        Monowheel clone = (Monowheel)_clone;
         maxWeight = clone.maxWeight;
         wheelCount = clone.wheelCount;
         maxSpeed = clone.maxSpeed;

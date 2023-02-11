@@ -12,9 +12,10 @@ public class WW2Airplane extends Aircraft{
         twinEngine = _twinEngine;
     }
 
-    public WW2Airplane(WW2Airplane clone){
+    public WW2Airplane(Object _clone){
+        WW2Airplane clone = (WW2Airplane) _clone;
         price = clone.price;
-        maxElevation = clone.maxElevation;
+        maxElevation =clone.maxElevation;
         twinEngine = clone.twinEngine;
     }
 

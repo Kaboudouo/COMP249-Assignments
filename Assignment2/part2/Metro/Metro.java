@@ -14,7 +14,8 @@ public class Metro extends Train{
         stopCount = _stopCount;
     }
 
-    public Metro(Metro clone){
+    public Metro(Object _clone){
+        Metro clone = (Metro)_clone;
         stopCount = clone.stopCount;
         wheelCount = clone.wheelCount;
         maxSpeed = clone.maxSpeed;
