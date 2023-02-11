@@ -39,7 +39,7 @@ public class WheeledTransportation {
 
     // Other Methods
     public String toString(){
-        return "This Wheeled Transportation has a maximum speed of " + maxSpeed + "km/h, and has " + wheelCount + " wheels.";
+        return "This Wheeled Transportation has a maximum speed of " + maxSpeed + "km/h, and has " + wheelCount + " wheel(s).";
     }
 
     public boolean equals(Object obj){

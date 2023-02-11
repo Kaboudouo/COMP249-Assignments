@@ -35,7 +35,7 @@ public class Metro extends Train{
 
     // Other Methods
     public String toString(){
-        return super.toString() + ". It has " + stopCount + " stops.";
+        return super.toString() + " Given its form, it is a metro with " + stopCount + " stop(s).";
     }
 
     public boolean equals(Object obj){

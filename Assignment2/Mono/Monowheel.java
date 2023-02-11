@@ -32,7 +32,7 @@ public class Monowheel extends WheeledTransportation{
 
     // Other Methods
     public String toString(){
-        return "Being a monowheel, it has a maximum weight load of " + maxWeight + "kg.";
+        return super.toString() + " Being a monowheel, it has a maximum weight load of " + maxWeight + "kg.";
     }
 
     public boolean equals(Object obj){
