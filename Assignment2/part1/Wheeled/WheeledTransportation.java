@@ -1,4 +1,4 @@
-package Assignment2.Wheeled;
+package Assignment2.part1.Wheeled;
 
 public class WheeledTransportation {
     public int wheelCount;

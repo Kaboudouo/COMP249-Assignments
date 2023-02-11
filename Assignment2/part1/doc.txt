@@ -1,0 +1,43 @@
+The findLeastAndMostExpensive aircraft function works as intended.
+
+1. The function works by taking in an Object array on looping through every element.
+2. It then verifies wether the class name of said object is "Aircraft"
+
+>   vehicles[i].getClass().getSimpleName().equalsIgnoreCase("Aircraft")
+
+3. When true, a simple min max comparison is done and sets the new min max, along with leastExpensive and mostExpensive Aircraft objects to the current element.
+4. Before the loop starts, min max are set to -1. If those values remain at -1 after looping through everything, the conclusion is that there is no aircrafts in the array.
+
+
+First Input:
+Object[] arr1 = {ferry1, ferry2, plane1, plane2, bomber, fighter, wheeled1, wheeled2, mono1, mono2, train1, train2, orange, green, tram1, tram2};
+
+There are 4 aircraft object within this array:
+    plane1 => price: 9.99   elevation: 1,250
+    plane2 => price: 28,000 elevation: 1,800
+    bomber => price: 8,000  elevation: 800
+    fighter => price: 9.99  elevation: 1,250
+
+Output:
+    Least expensive aircraft: This Aircraft costs $9.99, and has a maximum elevation of 1250.0m.
+    Most expensive aircraft: This Aircraft costs $29000.0, and has a maximum elevation of 1800.0m.
+
+
+Second Input:
+Object[] arr2 = {ferry1, ferry2, new Metro(), new Tram(), new Monowheel(), new Ferry(), wheeled1, wheeled2, mono1, mono2, train1, train2, orange, green, tram1, tram2};
+
+There are no aircrafts in this array.
+
+Output:
+    There are no aircrafts in this list.
+
+
+Third Input (Tested, Not included):
+Object[] arr1 = {ferry1, ferry2, plane1, wheeled1, wheeled2, mono1, mono2, train1, train2, orange, green, tram1, tram2};
+
+There is 1 aircraft object within this array:
+    plane1 => price: 9.99   elevation: 1,250
+
+Output:
+    Least expensive aircraft: This Aircraft costs $9.99, and has a maximum elevation of 1250.0m.
+    Most expensive aircraft: This Aircraft costs $9.99, and has a maximum elevation of 1250.0m.

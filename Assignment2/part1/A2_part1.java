@@ -1,10 +1,10 @@
-package Assignment2;
-import Assignment2.Aircraft.*;
-import Assignment2.Ferry.Ferry;
-import Assignment2.Metro.Metro;
-import Assignment2.Mono.Monowheel;
-import Assignment2.Train.*;
-import Assignment2.Wheeled.WheeledTransportation;
+package Assignment2.part1;
+import Assignment2.part1.Aircraft.*;
+import Assignment2.part1.Ferry.Ferry;
+import Assignment2.part1.Metro.Metro;
+import Assignment2.part1.Mono.Monowheel;
+import Assignment2.part1.Train.*;
+import Assignment2.part1.Wheeled.WheeledTransportation;
 
 public class A2_part1{
 
@@ -16,20 +16,21 @@ public class A2_part1{
         double minPrice = -1;
         for (int i = 0; i < vehicles.length; i++){
             if (vehicles[i].getClass().getSimpleName().equalsIgnoreCase("Aircraft")){
+                Aircraft aircraft = ((Aircraft)vehicles[i]);
                 if (maxPrice == -1){
-                    maxPrice = ((Aircraft)vehicles[i]).getPrice();
-                    mostExpensive = ((Aircraft)vehicles[i]);
-                } else if(maxPrice < ((Aircraft)vehicles[i]).getPrice()){
-                    maxPrice = ((Aircraft)vehicles[i]).getPrice();
-                    mostExpensive = ((Aircraft)vehicles[i]);
+                    maxPrice = aircraft.getPrice();
+                    mostExpensive = aircraft;
+                } else if(maxPrice < aircraft.getPrice()){
+                    maxPrice = aircraft.getPrice();
+                    mostExpensive = aircraft;
                 }
     
                 if (minPrice == -1){
-                    minPrice = ((Aircraft)vehicles[i]).getPrice();
-                    leastExpensive = ((Aircraft)vehicles[i]);
-                } else if(minPrice > ((Aircraft)vehicles[i]).getPrice()){
-                    minPrice = ((Aircraft)vehicles[i]).getPrice();
-                    leastExpensive = ((Aircraft)vehicles[i]);
+                    minPrice = aircraft.getPrice();
+                    leastExpensive = aircraft;
+                } else if(minPrice > aircraft.getPrice()){
+                    minPrice = aircraft.getPrice();
+                    leastExpensive = aircraft;
                 }
             }
         }
@@ -94,7 +95,7 @@ public class A2_part1{
 
         System.out.println("\nWill now attempt to find the most and least expensive Aircrafts within a list of the previously mentionned vehicles...");
         findLeastAndMostExpensiveAircraft(arr1);
-        System.out.println("\nWill now attempt to find the most and least expensive Aircrafts within a list of most of previous vehickles, without the aircrafts...");
+        System.out.println("\nWill now attempt to find the most and least expensive Aircrafts within a list of most of the previous vehicles, without the aircrafts...");
         findLeastAndMostExpensiveAircraft(arr2);
     }
 }

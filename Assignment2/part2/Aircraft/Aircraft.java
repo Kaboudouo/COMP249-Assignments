@@ -1,4 +1,4 @@
-package Assignment2.Aircraft;
+package Assignment2.part2.Aircraft;
 
 public class Aircraft {
     double price;

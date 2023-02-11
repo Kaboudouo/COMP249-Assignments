@@ -1,5 +1,5 @@
-package Assignment2.Mono;
-import Assignment2.Wheeled.WheeledTransportation;
+package Assignment2.part1.Mono;
+import Assignment2.part1.Wheeled.WheeledTransportation;
 
 public class Monowheel extends WheeledTransportation{
     double maxWeight;

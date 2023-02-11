@@ -1,5 +1,5 @@
-package Assignment2.Train;
-import Assignment2.Metro.*;
+package Assignment2.part1.Train;
+import Assignment2.part1.Metro.*;
 
 public class Tram extends Metro{
     int yrCreation;

@@ -1,5 +1,5 @@
-package Assignment2.Train;
-import Assignment2.Wheeled.WheeledTransportation;
+package Assignment2.part1.Train;
+import Assignment2.part1.Wheeled.WheeledTransportation;
 
 public class Train extends WheeledTransportation{
     public int vehicleCount;

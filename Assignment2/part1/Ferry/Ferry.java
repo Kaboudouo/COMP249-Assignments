@@ -1,4 +1,4 @@
-package Assignment2.Ferry;
+package Assignment2.part1.Ferry;
 
 public class Ferry{
     
