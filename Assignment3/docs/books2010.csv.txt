@@ -93,4 +93,4 @@ Tarzan - My Father,Johnny Weissmuller Jr. & William Reed & W. Craig Reed,19.95,1
 Wizardry of Oz - The Artistry And Magic of The 1939 Mgm Classic (Revised & Expanded Edition),Jay Scarfone & William Stillman,13.95,1557836248,MTV,
 "Young, Alan - There's No Business Like Show Business... Was",Alan Young,12.95,1593930534,MTV,
 Pop-Up Book of Nightmares,Gary Greenberg,4.95,031228263X,NEB,
-Racing - Legends of Stock Car Racing,Dr. John Craft,5.95,0760301441,SSM,
+Racing - Legends of Stock Car Racing,Dr. John Craft,5.95,0760301441,SSM, 
