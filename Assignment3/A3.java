@@ -42,15 +42,15 @@ class UnkownGenreException extends Exception{
 
 public class A3 {
 
-    static void validateFields(String book, String[] fields){
+    static void writeToCsv(String book, String genre){
         System.out.println("\n" + book);
-    }   
+    }
 
-    static void validateSyntax(String book){
+    static String[] createFields(String book){
+        String[] fields = {"", "", "", "", "", ""};
         int quoteCount = 0;
         int fieldCount = 0;
 
-        String[] fields = {"", "", "", "", "", ""};
         for (char c : book.toCharArray()){
             if (c == '"'){
                 quoteCount++;
@@ -64,16 +64,28 @@ public class A3 {
                 }
                 continue;
             }
-
             fields[fieldCount] += String.valueOf(c);
         }
-        
-        try {
+
+        try{
             if (fieldCount > 5){
                 throw new TooManyFieldsException(book);
             } else if (fieldCount < 5){
                 throw new TooFewFieldsException(book);
             }
+        } catch(TooManyFieldsException e){
+        } catch (TooFewFieldsException e){
+        }
+        return fields;
+    }
+
+    static void validateSyntax(String book){
+
+        String[] fields;
+
+        fields = createFields(book);
+        
+        try {
             String missingFieldCode = "";
             for (int i = 0; i < fields.length; i++){
                 // System.out.print(i + ": " + fields[i] + " ");
@@ -97,10 +109,7 @@ public class A3 {
                 throw new UnkownGenreException(book);
             }
             // Any field array we return now contains a syntactically correct book
-            validateFields(book, fields);
-
-        } catch(TooManyFieldsException e){
-        } catch (TooFewFieldsException e){
+            writeToCsv(book, fields[4]);
         } catch (MissingFieldException e){
         } catch (UnkownGenreException e){
         }
@@ -151,7 +160,16 @@ public class A3 {
         //checkBooks("books2010.csv.txt");
     }
 
+    static void validateFields(String book, String[] fields){
+        System.out.println("\n" + book);
+    }   
+
+    static void do_part2(){
+
+    }
+
     public static void main (String[] args){
         do_part1();
+        do_part2();
     }
 }
