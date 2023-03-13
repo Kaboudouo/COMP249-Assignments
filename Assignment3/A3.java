@@ -15,35 +15,55 @@ import java.io.File;
 
 class TooFewFieldsException extends Exception{
     public TooFewFieldsException(String record){
-        System.out.println("\nThis record has too FEW fields: \n" + record);
+       System.out.println("\nThis record has too FEW fields: \n" + record);
     }
 }
 
 class TooManyFieldsException extends Exception{
     public TooManyFieldsException(String record){
-        System.out.println("\nThis record has too MANY fields: \n" + record);
+       System.out.println("\nThis record has too MANY fields: \n" + record);
     }
 }
 
-
 class MissingFieldException extends Exception{
     public MissingFieldException(String record, String fieldCodes){
-        System.out.println("\nThis record is missing fields: \n" + record + "  Missing Field Code: " + fieldCodes);
+       System.out.println("\nThis record is missing fields: \n" + record + "  Missing Field Code: " + fieldCodes);
     }
 }
 
 class UnkownGenreException extends Exception{
     public UnkownGenreException(String record){
-        System.out.println("\nInvalid genre: \n" + record);
+      System.out.println("\nInvalid genre: \n" + record);
     }
 }
 
+class BadPriceException extends Exception{
+    public BadPriceException(String record){
+       System.out.println("\nInvalid Price: \n" + record);
+    }
+}
+
+class BadYearException extends Exception{
+    public BadYearException(String record){
+       System.out.println("\nInvalid Year: \n" + record);
+    }
+}
+class BadIsbn10Exception extends Exception{
+    public BadIsbn10Exception(String record){
+        System.out.println("\nBad ISBN-10: \n" + record);
+    }
+}
+class BadIsbn13Exception extends Exception{
+    public BadIsbn13Exception(String record){
+        System.out.println("\nBad ISBN-13: \n" + record);
+    }
+}
 
 
 public class A3 {
 
     static void writeToCsv(String book, String genre){
-        System.out.println("\n" + book);
+        // System.out.println("\n" + book);
     }
 
     static String[] createFields(String book){
@@ -160,6 +180,11 @@ public class A3 {
         //checkBooks("books2010.csv.txt");
     }
 
+    // Writes to new .ser files
+    static void writeToSer(String book, String path){
+        System.out.println("\nVALID BOOK: " + book);
+    }
+
     // Validates each field of the syntactically correct books
     static void validateFields(String book, String originPath){
         String[] fields = createFields(book);
@@ -167,20 +192,42 @@ public class A3 {
         try{
             // Price check
             double price = Float.parseFloat(fields[2]);
+            if (price < 0){
+                throw new BadPriceException(book);
+            }
 
-            // ISBN check
-            if (fields[3].length() == 10){
-
-            } else if (fields[3].length() == 13){
-
-            } else{
-
+            // ISBN check, String > Char > Int
+            String isbn = fields[3];
+            int sum = 0;
+            if (isbn.length() == 10){
+                for (int i = 0; i < 10; i++){
+                    sum += Math.abs(i-10) * Character.getNumericValue(isbn.charAt(i));
+                }
+                if (sum % 11 != 0){
+                    throw new BadIsbn10Exception(book);
+                }
+            } else if (isbn.length() == 13){
+                for (int i = 0; i < 13; i++){
+                    sum += ((i%2 * 2) + 1) * Character.getNumericValue(isbn.charAt(i));
+                }
+                if (sum % 10 != 0){
+                    throw new BadIsbn13Exception(book);
+                }
             }
 
             //Year check
             int year = Integer.parseInt(fields[5]);
-        } catch (Exception e){
+            if (year < 1995 || year > 2010){
+                throw new BadYearException(book);
+            }
 
+            // Book is now certainly syntactically and semantically correct
+            writeToSer(book, originPath);
+
+        }catch (BadPriceException e){
+        }catch (BadYearException e){
+        }catch (BadIsbn10Exception e){
+        }catch (BadIsbn13Exception e){
         }
 
     }   
