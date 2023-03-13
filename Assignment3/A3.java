@@ -2,16 +2,14 @@ package Assignment3;
 
 import java.util.Scanner;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.io.BufferedInputStream;
-import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 class TooFewFieldsException extends Exception{
     public TooFewFieldsException(String record){
@@ -64,6 +62,82 @@ class GeneralSemanticsException extends Exception{
     }
 }
 
+class Book implements java.io.Serializable{
+    String title;
+    String author;
+    String isbn;
+    String genre;
+    Double price;
+    int year;
+
+    public Book(String _title, String _author, String _isbn, String _genre, Double _price, int _year){
+        title = _title;
+        author = _author;
+        isbn = _isbn;
+        genre = _genre;
+        price = _price;
+        year = _year;
+    }
+
+    public String toString(){
+        return title + ", " + author + ", " + price  + ", " + isbn  + ", " + genre + ", " + year;
+    }
+
+    public boolean equals(Object obj){
+        if (this == obj) {return true;}
+        if (obj == null) {return false;}
+        if (obj.getClass() != this.getClass()) {return false;}
+
+        Book otherBook = (Book) obj;
+        return this.title == otherBook.title && this.author == otherBook.author && this.price == otherBook.price && this.isbn == otherBook.isbn && this.genre == otherBook.genre && this.year == otherBook.year;
+    }
+
+    // Mutator Accessor Pairs
+    public String getTitle(){
+        return title;
+    }
+    public void setTitle(String newTitle){
+        title = newTitle;
+    }
+
+    public String getAuthor(){
+        return author;
+    }
+    public void setAuthor(String newAuthor){
+        author = newAuthor;
+    }
+
+    public String getIsbn(){
+        return isbn;
+    }
+    public void setIsbn(String newIsbn){
+        isbn = newIsbn;
+    }
+
+    public String getGenre(){
+        return genre;
+    }
+    public void setGenre(String newGenre){
+        genre = newGenre;
+    }
+
+    public double getPrice(){
+        return price;
+    }
+    public void setPrice(double newPrice){
+        price = newPrice;
+    }
+
+    public int getYear(){
+        return year;
+    }
+    public void setYear(int newYear){
+        year = newYear;
+    }
+
+
+}
+
 
 public class A3 {
     static PrintWriter cartoonsWriter = null;
@@ -75,13 +149,22 @@ public class A3 {
     static PrintWriter sportWriter = null;
     static PrintWriter trainsWriter = null;
 
+    static ObjectOutputStream cartoonsObjectWriter = null;
+    static ObjectOutputStream hobbiesObjectWriter = null;
+    static ObjectOutputStream moviesObjectWriter = null;
+    static ObjectOutputStream musicObjectWriter = null;
+    static ObjectOutputStream nostalgiaObjectWriter = null;
+    static ObjectOutputStream oldObjectWriter = null;
+    static ObjectOutputStream sportObjectWriter = null;
+    static ObjectOutputStream trainsObjectWriter = null;
+
     static PrintWriter syntaxWriter = null;
     static PrintWriter semanticWriter = null;
 
 
     static String oldPath = "";
 
-    // Id 0: Close All pw, Id 1: Set pw to part 1 files, Id 2: Set pw to part 2 files
+    // Id 0: Close All pw, Id 1: Set pw to part 1 files, Id 2: Close all object writers, Id 3: Set ow to part 2 files
     static void manipulateWriters(int id){
         if (id == 0){
             cartoonsWriter.close();
@@ -92,12 +175,8 @@ public class A3 {
             oldWriter.close();
             sportWriter.close();
             trainsWriter.close();
-            if (syntaxWriter != null){
-                syntaxWriter.close();
-            }
-            if (semanticWriter != null){
-                semanticWriter.close();
-            }
+            syntaxWriter.close();
+
         }else if (id == 1){
             try{
                 cartoonsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Cartoons_Comics.csv"));
@@ -115,17 +194,32 @@ public class A3 {
             }
         } else if (id == 2){
             try{
-                cartoonsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Cartoons_Comics.csv.ser"));
-                hobbiesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Hobbies_Collectibles.csv.ser"));
-                moviesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Movies_TV_Books.csv.ser"));
-                musicWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Music_Radio_Books.csv.ser"));
-                nostalgiaWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Nostalgia_Electronic_Books.csv.ser"));
-                oldWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Old_Time_Radio.csv.ser"));
-                sportWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Sport_Memorabilia.csv.ser"));
-                trainsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Trains_Planes_Automobiles.csv.ser"));
+                cartoonsObjectWriter.close();
+                hobbiesObjectWriter.close();
+                moviesObjectWriter.close();
+                nostalgiaObjectWriter.close();
+                oldObjectWriter.close();
+                sportObjectWriter.close();
+                trainsObjectWriter.close();
+                semanticWriter.close();
+            } catch (IOException e){
+                System.out.println("Could not close object writers");
+                System.exit(0);
+            }
+
+        } else if (id == 3){
+            try{
+                cartoonsObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Cartoons_Comics.csv.ser"));
+                hobbiesObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Hobbies_Collectibles.csv.ser"));
+                moviesObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Movies_TV_Books.csv.ser"));
+                musicObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Music_Radio_Books.csv.ser"));
+                nostalgiaObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Nostalgia_Electronic_Books.csv.ser"));
+                oldObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Old_Time_Radio.csv.ser"));
+                sportObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Sport_Memorabilia.csv.ser"));
+                trainsObjectWriter = new ObjectOutputStream(new FileOutputStream("./Assignment3/output_part2/Trains_Planes_Automobiles.csv.ser"));
                 semanticWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/semantic_error_file.txt"));
             } catch (Exception e){
-                System.out.println("Could not find one or more of the output files (Part 1)");
+                System.out.println("Could not find one or more of the output files (Part 2)");
                 System.exit(0);
             }
         }
@@ -140,7 +234,7 @@ public class A3 {
         syntaxWriter.println("Record: " + book + "\n");
     }
 
-    // Outputs both syntax and semantic records when needed
+    // Prints to syntax error file
     static void writeToCsv(String book, String genre){
         switch (genre){
             case "CCB":
@@ -349,6 +443,47 @@ public class A3 {
         semanticWriter.println("Record: " + book + "\n");
     }
 
+    static void writeToSer(String book, String[] fields){
+        String genre = fields[4];
+        Book bookObj = new Book(fields[0], fields[1], fields[3], fields[4], Double.parseDouble(fields[2]), Integer.parseInt(fields[5]));
+        ObjectOutputStream out = null;
+        switch (genre){
+            case "CCB":
+                out = cartoonsObjectWriter;
+                break;
+            case "HCB":
+                out = hobbiesObjectWriter;
+                break;
+            case "MTV":
+                out = moviesObjectWriter;
+                break;
+            case "MRB":
+                out = musicObjectWriter;
+                break;
+            case "NEB":
+                out = nostalgiaObjectWriter;
+                break;
+            case "OTR":
+                out = oldObjectWriter;
+                break;
+            case "SSM":
+                out = sportObjectWriter;
+                break;
+            case "TPA":
+                out = trainsObjectWriter;
+                break;
+            default:
+                System.out.println("Somehow an invalid genre slipped past...");
+                System.exit(0);
+        }
+
+        try{
+            out.writeObject(bookObj);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     // Validates each field of the syntactically correct books
     static void validateFields(String book, String originPath){
         String[] fields = createFields(book, originPath);
@@ -396,7 +531,7 @@ public class A3 {
             }
 
             // Book is now certainly syntactically and semantically correct
-            writeToCsv(book, fields[4]);
+            writeToSer(book, fields);
 
         } catch (GeneralSemanticsException e){
             writeToSemanticFile(book, originPath, superMsg);
@@ -414,7 +549,7 @@ public class A3 {
     }   
 
     static void do_part2(){
-        manipulateWriters(2);
+        manipulateWriters(3);
         String[] pathsToOpen = {"Cartoons_Comics.csv", "Hobbies_Collectibles.csv", "Movies_TV_Books.csv", "Music_Radio_Books.csv", "Nostalgia_Electronic_Books.csv", "Old_Time_Radio.csv", "Sport_Memorabilia.csv", "Trains_Planes_Automobiles.csv"};
         Scanner scanner = null;
 
@@ -437,7 +572,7 @@ public class A3 {
             }
         }
 
-        manipulateWriters(0);
+        manipulateWriters(2);
     }
 
     public static void main (String[] args){
