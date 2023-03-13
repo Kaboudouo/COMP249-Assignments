@@ -58,6 +58,11 @@ class BadIsbn13Exception extends Exception{
         // System.out.println("\nBad ISBN-13: \n" + record);
     }
 }
+class GeneralSemanticsException extends Exception{
+    public GeneralSemanticsException(String record){
+        // System.out.println("Invalid semantics: \n" + record);
+    }
+}
 
 
 public class A3 {
@@ -69,12 +74,16 @@ public class A3 {
     static PrintWriter oldWriter = null;
     static PrintWriter sportWriter = null;
     static PrintWriter trainsWriter = null;
+
     static PrintWriter syntaxWriter = null;
+    static PrintWriter semanticWriter = null;
+
 
     static String oldPath = "";
 
-    static void manipulatePart1Writers(boolean closeAll){
-        if (closeAll){
+    // Id 0: Close All pw, Id 1: Set pw to part 1 files, Id 2: Set pw to part 2 files
+    static void manipulateWriters(int id){
+        if (id == 0){
             cartoonsWriter.close();
             hobbiesWriter.close();
             moviesWriter.close();
@@ -83,23 +92,42 @@ public class A3 {
             oldWriter.close();
             sportWriter.close();
             trainsWriter.close();
-            syntaxWriter.close();
-        }else {
+            if (syntaxWriter != null){
+                syntaxWriter.close();
+            }
+            if (semanticWriter != null){
+                semanticWriter.close();
+            }
+        }else if (id == 1){
             try{
-                cartoonsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Cartoons_Comics.csv"));
-                hobbiesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Hobbies_Collectibles.csv"));
-                moviesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Movies_TV_Books.csv"));
-                musicWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Music_Radio_Books.csv"));
-                nostalgiaWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Nostalgia_Electronic_Book.csv"));
-                oldWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Old_Time_Radio.csv"));
-                sportWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Sport_Memorabilia.csv"));
-                trainsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/Trains_Planes_Automobiles.csv"));
-                syntaxWriter = new PrintWriter(new FileOutputStream("./Assignment3/output/syntax_error_file.txt"));
+                cartoonsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Cartoons_Comics.csv"));
+                hobbiesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Hobbies_Collectibles.csv"));
+                moviesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Movies_TV_Books.csv"));
+                musicWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Music_Radio_Books.csv"));
+                nostalgiaWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Nostalgia_Electronic_Books.csv"));
+                oldWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Old_Time_Radio.csv"));
+                sportWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Sport_Memorabilia.csv"));
+                trainsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/Trains_Planes_Automobiles.csv"));
+                syntaxWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part1/syntax_error_file.txt"));
             } catch (Exception e){
                 System.out.println("Could not find one or more of the output files (Part 1)");
                 System.exit(0);
             }
-
+        } else if (id == 2){
+            try{
+                cartoonsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Cartoons_Comics.csv.ser"));
+                hobbiesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Hobbies_Collectibles.csv.ser"));
+                moviesWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Movies_TV_Books.csv.ser"));
+                musicWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Music_Radio_Books.csv.ser"));
+                nostalgiaWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Nostalgia_Electronic_Books.csv.ser"));
+                oldWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Old_Time_Radio.csv.ser"));
+                sportWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Sport_Memorabilia.csv.ser"));
+                trainsWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/Trains_Planes_Automobiles.csv.ser"));
+                semanticWriter = new PrintWriter(new FileOutputStream("./Assignment3/output_part2/semantic_error_file.txt"));
+            } catch (Exception e){
+                System.out.println("Could not find one or more of the output files (Part 1)");
+                System.exit(0);
+            }
         }
     }
 
@@ -112,6 +140,7 @@ public class A3 {
         syntaxWriter.println("Record: " + book + "\n");
     }
 
+    // Outputs both syntax and semantic records when needed
     static void writeToCsv(String book, String genre){
         switch (genre){
             case "CCB":
@@ -245,8 +274,10 @@ public class A3 {
             if (!validGenre){
                 throw new UnkownGenreException(book);
             }
+
             // Any field array we return now contains a syntactically correct book
             writeToCsv(book, fields[4]);
+
         } catch (MissingFieldException e){
             writeToSyntaxFile(book, path, missingFieldMsg);
         } catch (UnkownGenreException e){
@@ -267,14 +298,22 @@ public class A3 {
             return;
         }
 
+        // Quickly checks if the next line is empty, then validates
         while (bookScanner.hasNextLine()){
-            validateSyntax(bookScanner.nextLine(), path);
+            String newLine = bookScanner.nextLine();
+            if (newLine == ""){
+                continue;
+            }
+            validateSyntax(newLine, path);
         }
+
         bookScanner.close();
     }
 
     static void do_part1(){
         // Pull file from path
+        manipulateWriters(1);
+
         Scanner scanner = null;
         try {
             InputStream inputStream = new FileInputStream("./Assignment3/docs/part1_input_file_names.txt");
@@ -296,23 +335,31 @@ public class A3 {
             }
         }
 
+        scanner.close();
+        manipulateWriters(0);
         //checkBooks("books2010.csv.txt");
     }
 
-    // Writes to new .ser files
-    static void writeToSer(String book, String path){
-        System.out.println("\nVALID BOOK: " + book);
+    static void writeToSemanticFile(String book, String path, String msg){
+        if (!oldPath.equals(path)){
+            oldPath = path;
+            semanticWriter.println("Semantic Error in File: " + path + "\n======================================");
+        }
+        semanticWriter.println("Error: " + msg);
+        semanticWriter.println("Record: " + book + "\n");
     }
 
     // Validates each field of the syntactically correct books
     static void validateFields(String book, String originPath){
         String[] fields = createFields(book, originPath);
+        String superMsg = "Invalid";
 
         try{
             // Price check
             double price = Float.parseFloat(fields[2]);
             if (price < 0){
-                throw new BadPriceException(book);
+                superMsg += " Price";
+                //throw new BadPriceException(book);
             }
 
             // ISBN check, String > Char > Int
@@ -323,59 +370,79 @@ public class A3 {
                     sum += Math.abs(i-10) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 11 != 0){
-                    throw new BadIsbn10Exception(book);
+                    superMsg += " ISBN-10";
+                    // throw new BadIsbn10Exception(book);
                 }
             } else if (isbn.length() == 13){
                 for (int i = 0; i < 13; i++){
                     sum += ((i%2 * 2) + 1) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 10 != 0){
-                    throw new BadIsbn13Exception(book);
+                    superMsg += " ISBN-13";
+                    // throw new BadIsbn13Exception(book);
                 }
             }
 
             //Year check
             int year = Integer.parseInt(fields[5]);
             if (year < 1995 || year > 2010){
-                throw new BadYearException(book);
+                superMsg += " Year";
+                // throw new BadYearException(book);
+            }
+
+            // Creates error message including all semantic errors instead of just the thrown one
+            if (superMsg != "Invalid"){
+                throw new GeneralSemanticsException(book);
             }
 
             // Book is now certainly syntactically and semantically correct
-            writeToSer(book, originPath);
+            writeToCsv(book, fields[4]);
 
-        }catch (BadPriceException e){
-        }catch (BadYearException e){
-        }catch (BadIsbn10Exception e){
-        }catch (BadIsbn13Exception e){
+        } catch (GeneralSemanticsException e){
+            writeToSemanticFile(book, originPath, superMsg);
         }
+        // }catch (BadPriceException e){
+        //     writeToSemanticFile(book, originPath, "Invalid Price");
+        // }catch (BadYearException e){
+        //     writeToSemanticFile(book, originPath, "Invalid Year");
+        // }catch (BadIsbn10Exception e){
+        //     writeToSemanticFile(book, originPath, "Invalid ISBN-10");
+        // }catch (BadIsbn13Exception e){
+        //     writeToSemanticFile(book, originPath, "Invalid ISBN-13");
+        // }
 
     }   
 
     static void do_part2(){
-        String[] pathsToOpen = {"Cartoons_Comics.csv", "Hobbies_Collectibles_Books.csv", "Movies_TV.csv", "Music_Radio_Books.csv", "Nostalgia_Electric_Books.csv", "Old_Time_Radio.csv", "Sports_Memorabilia.csv" + "Trains_Planes_Automobiles.csv"};
+        manipulateWriters(2);
+        String[] pathsToOpen = {"Cartoons_Comics.csv", "Hobbies_Collectibles.csv", "Movies_TV_Books.csv", "Music_Radio_Books.csv", "Nostalgia_Electronic_Books.csv", "Old_Time_Radio.csv", "Sport_Memorabilia.csv", "Trains_Planes_Automobiles.csv"};
         Scanner scanner = null;
 
         for (int i = 0; i < pathsToOpen.length; i++){
             try {
-                InputStream inputStream = new FileInputStream("./Assignment3/output/" + pathsToOpen[i]);
+                InputStream inputStream = new FileInputStream("./Assignment3/output_part1/" + pathsToOpen[i]);
                 new BufferedInputStream(inputStream);
                 scanner = new Scanner (inputStream);
             } catch (FileNotFoundException e){
-                System.out.println("Could not find input name file.");
+                System.out.println("Could not find file: " + pathsToOpen[i]);
                 System.exit(0);
             }
 
             while (scanner.hasNextLine()){
-                validateFields(scanner.nextLine(), pathsToOpen[i]);
+                String newLine = scanner.nextLine();
+                if (newLine == ""){
+                    continue;
+                }
+                validateFields(newLine, pathsToOpen[i]);
             }
         }
+
+        manipulateWriters(0);
     }
 
     public static void main (String[] args){
-        manipulatePart1Writers(false);
-        do_part1();
-        manipulatePart1Writers(true);
 
-        //do_part2();
+        do_part1();
+        do_part2();
     }
 }
