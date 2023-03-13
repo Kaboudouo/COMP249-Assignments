@@ -56,11 +56,11 @@ class BadIsbn13Exception extends Exception{
         // System.out.println("\nBad ISBN-13: \n" + record);
     }
 }
-class GeneralSemanticsException extends Exception{
-    public GeneralSemanticsException(String record){
-        // System.out.println("Invalid semantics: \n" + record);
-    }
-}
+// class GeneralSemanticsException extends Exception{
+//     public GeneralSemanticsException(String record){
+//         // System.out.println("Invalid semantics: \n" + record);
+//     }
+// }
 
 class Book implements java.io.Serializable{
     String title;
@@ -487,14 +487,14 @@ public class A3 {
     // Validates each field of the syntactically correct books
     static void validateFields(String book, String originPath){
         String[] fields = createFields(book, originPath);
-        String superMsg = "Invalid";
+        // String superMsg = "Invalid";
 
         try{
             // Price check
             double price = Float.parseFloat(fields[2]);
             if (price < 0){
-                superMsg += " Price";
-                //throw new BadPriceException(book);
+                //superMsg += " Price";
+                throw new BadPriceException(book);
             }
 
             // ISBN check, String > Char > Int
@@ -505,46 +505,43 @@ public class A3 {
                     sum += Math.abs(i-10) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 11 != 0){
-                    superMsg += " ISBN-10";
-                    // throw new BadIsbn10Exception(book);
+                    //superMsg += " ISBN-10";
+                    throw new BadIsbn10Exception(book);
                 }
             } else if (isbn.length() == 13){
                 for (int i = 0; i < 13; i++){
                     sum += ((i%2 * 2) + 1) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 10 != 0){
-                    superMsg += " ISBN-13";
-                    // throw new BadIsbn13Exception(book);
+                    //superMsg += " ISBN-13";
+                    throw new BadIsbn13Exception(book);
                 }
             }
 
             //Year check
             int year = Integer.parseInt(fields[5]);
             if (year < 1995 || year > 2010){
-                superMsg += " Year";
-                // throw new BadYearException(book);
+                //superMsg += " Year";
+                throw new BadYearException(book);
             }
 
             // Creates error message including all semantic errors instead of just the thrown one
-            if (superMsg != "Invalid"){
-                throw new GeneralSemanticsException(book);
-            }
+            // if (superMsg != "Invalid"){
+            //     throw new GeneralSemanticsException(book);
+            // }
 
             // Book is now certainly syntactically and semantically correct
             writeToSer(book, fields);
 
-        } catch (GeneralSemanticsException e){
-            writeToSemanticFile(book, originPath, superMsg);
+        }catch (BadPriceException e){
+            writeToSemanticFile(book, originPath, "Invalid Price");
+        }catch (BadYearException e){
+            writeToSemanticFile(book, originPath, "Invalid Year");
+        }catch (BadIsbn10Exception e){
+            writeToSemanticFile(book, originPath, "Invalid ISBN-10");
+        }catch (BadIsbn13Exception e){
+            writeToSemanticFile(book, originPath, "Invalid ISBN-13");
         }
-        // }catch (BadPriceException e){
-        //     writeToSemanticFile(book, originPath, "Invalid Price");
-        // }catch (BadYearException e){
-        //     writeToSemanticFile(book, originPath, "Invalid Year");
-        // }catch (BadIsbn10Exception e){
-        //     writeToSemanticFile(book, originPath, "Invalid ISBN-10");
-        // }catch (BadIsbn13Exception e){
-        //     writeToSemanticFile(book, originPath, "Invalid ISBN-13");
-        // }
 
     }   
 
