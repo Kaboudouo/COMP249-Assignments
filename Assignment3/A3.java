@@ -160,12 +160,49 @@ public class A3 {
         //checkBooks("books2010.csv.txt");
     }
 
-    static void validateFields(String book, String[] fields){
-        System.out.println("\n" + book);
+    // Validates each field of the syntactically correct books
+    static void validateFields(String book, String originPath){
+        String[] fields = createFields(book);
+
+        try{
+            // Price check
+            double price = Float.parseFloat(fields[2]);
+
+            // ISBN check
+            if (fields[3].length() == 10){
+
+            } else if (fields[3].length() == 13){
+
+            } else{
+
+            }
+
+            //Year check
+            int year = Integer.parseInt(fields[5]);
+        } catch (Exception e){
+
+        }
+
     }   
 
     static void do_part2(){
+        String[] pathsToOpen = {"Cartoons_Comics.csv", "Hobbies_Collectibles_Books.csv", "Movies_TV.csv", "Music_Radio_Books.csv", "Nostalgia_Electric_Books.csv", "Old_Time_Radio.csv", "Sports_Memorabilia.csv" + "Trains_Planes_Automobiles.csv"};
+        Scanner scanner = null;
 
+        for (int i = 0; i < pathsToOpen.length; i++){
+            try {
+                InputStream inputStream = new FileInputStream("./Assignment3/output/" + pathsToOpen[i]);
+                new BufferedInputStream(inputStream);
+                scanner = new Scanner (inputStream);
+            } catch (FileNotFoundException e){
+                System.out.println("Could not find input name file.");
+                System.exit(0);
+            }
+
+            while (scanner.hasNextLine()){
+                validateFields(scanner.nextLine(), pathsToOpen[i]);
+            }
+        }
     }
 
     public static void main (String[] args){
