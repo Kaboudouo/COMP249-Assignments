@@ -163,6 +163,7 @@ public class A3 {
 
 
     static String oldPath = "";
+    static int[] librarySize = {0,0,0,0,0,0,0,0};
 
     // Id 0: Close All pw, Id 1: Set pw to part 1 files, Id 2: Close all object writers, Id 3: Set ow to part 2 files
     static void manipulateWriters(int id){
@@ -449,27 +450,35 @@ public class A3 {
         ObjectOutputStream out = null;
         switch (genre){
             case "CCB":
+                librarySize[0] += 1;
                 out = cartoonsObjectWriter;
                 break;
             case "HCB":
+                librarySize[1] += 1;
                 out = hobbiesObjectWriter;
                 break;
             case "MTV":
+                librarySize[2] += 1;
                 out = moviesObjectWriter;
                 break;
             case "MRB":
+                librarySize[3] += 1;
                 out = musicObjectWriter;
                 break;
             case "NEB":
+                librarySize[4] += 1;
                 out = nostalgiaObjectWriter;
                 break;
             case "OTR":
+                librarySize[5] += 1;
                 out = oldObjectWriter;
                 break;
             case "SSM":
+                librarySize[6] += 1;
                 out = sportObjectWriter;
                 break;
             case "TPA":
+                librarySize[7] += 1;
                 out = trainsObjectWriter;
                 break;
             default:
@@ -572,9 +581,35 @@ public class A3 {
         manipulateWriters(2);
     }
 
+    static void do_part3(){
+        // Order : CCB, HCB, MTV, MRB, NEB, OTR, SSM, TPA
+        Book[][] greatLibrary = {new Book[librarySize[0]],  new Book[librarySize[1]], new Book[librarySize[2]], new Book[librarySize[3]], new Book[librarySize[4]], new Book[librarySize[5]], new Book[librarySize[6]], new Book[librarySize[7]]};
+        String[] pathsToOpen = {"Cartoons_Comics.csv.ser", "Hobbies_Collectibles.csv.ser", "Movies_TV_Books.csv.ser", "Music_Radio_Books.csv.ser", "Nostalgia_Electronic_Books.csv.ser", "Old_Time_Radio.csv.ser", "Sport_Memorabilia.csv.ser", "Trains_Planes_Automobiles.csv.ser"};
+
+        ObjectInputStream in = null;
+        try{
+            for (int i = 0; i < greatLibrary.length; i++){
+                in =  new ObjectInputStream(new FileInputStream("./Assignment3/output_part2/"+pathsToOpen[i]));
+                for (int j = 0; j < greatLibrary[i].length; j++){
+                    greatLibrary[i][j] = (Book) in.readObject();
+                }
+            }
+            in.close();
+        } catch (IOException e){
+            System.out.println("File name not found (part 3)");
+            System.exit(0);
+        } catch (ClassNotFoundException e){
+            System.out.println("Class not found");
+            System.exit(0);
+        }
+
+    }
+
     public static void main (String[] args){
 
         do_part1();
         do_part2();
+        do_part3();
+
     }
 }
