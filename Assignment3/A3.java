@@ -278,7 +278,7 @@ public class A3 {
             // Is title is quotes check
             if (c == '"'){
                 quoteCount++;
-                continue;
+                // continue;
             }
             
             // Counts how many commas have passed, thus counting the number of fields except if comma is in quoted title
@@ -389,7 +389,7 @@ public class A3 {
             bookScanner = new Scanner (bookStream);
         }
         catch (FileNotFoundException e){
-            System.out.println("Could not find file: " + path);
+            // System.out.println("Could not find file: " + path);
             return;
         }
 
@@ -581,6 +581,14 @@ public class A3 {
         manipulateWriters(2);
     }
 
+    static String space(int n){
+        String spacing = "";
+        for (int i = 0; i < n; i++){
+           spacing += " ";
+        }
+        return spacing;
+    }
+
     static void do_part3(){
         // Order : CCB, HCB, MTV, MRB, NEB, OTR, SSM, TPA
         Book[][] greatLibrary = {new Book[librarySize[0]],  new Book[librarySize[1]], new Book[librarySize[2]], new Book[librarySize[3]], new Book[librarySize[4]], new Book[librarySize[5]], new Book[librarySize[6]], new Book[librarySize[7]]};
@@ -601,6 +609,115 @@ public class A3 {
         } catch (ClassNotFoundException e){
             System.out.println("Class not found");
             System.exit(0);
+        }
+
+        // Interface
+        Scanner input = new Scanner(System.in);
+        int libraryIndex = 0;
+        int bookIndex = 0;
+        String stringRes = "";
+        int intRes = -1;
+
+        while(true){
+            System.out.println("\n-------------------------");
+            System.out.println("        Main Menu       ");
+            System.out.println("-------------------------");
+            System.out.println("v   View the selected file: " + pathsToOpen[libraryIndex] + " (" + greatLibrary[libraryIndex].length + " records)");
+            System.out.println("s   Select a file to view");
+            System.out.println("x   Exit");
+            System.out.println("------------------------");
+            System.out.print("Enter Your Choice: ");
+            try{
+                stringRes = input.next();
+            } catch (Exception e){
+                System.out.println("\nThat is not a valid input. Please try again.");
+                continue;
+            }
+
+            if (stringRes.equalsIgnoreCase("s")){
+                System.out.println("\n-------------------------");
+                System.out.println("      File Sub-Menu     ");
+                System.out.println("-------------------------");
+                for (int i = 0; i < greatLibrary.length; i++){
+                    System.out.println(i+1 + " " + pathsToOpen[i] + space(34 - pathsToOpen[i].length()) + " (" + greatLibrary[i].length + " records)");
+                }
+                System.out.println("9 Exit");
+                System.out.println("-------------------------\n");
+                while (true){
+                    System.out.print("Enter Your Choice: ");
+
+                    if (input.hasNextInt()){
+                        intRes = input.nextInt();
+                    } else{
+                        System.out.println("\nThat is not a valid input. Please try again.");
+                        input = new Scanner(System.in);
+                        continue;
+                    }
+
+                    if (intRes < 1 || intRes > 9){
+                        System.out.println("\nThat is not a valid option. Please try again.");
+                        continue;
+                    }
+
+                    if (intRes == 9){
+                        System.out.println("\nReturning to main menu.");
+                        break;
+                    }
+
+                    libraryIndex = intRes - 1;
+                    break;
+                }
+                continue;
+            } else if (stringRes.equalsIgnoreCase("v")){
+                System.out.println("\nNow viewing: " + pathsToOpen[libraryIndex] + " (" + greatLibrary[libraryIndex].length + " records)");
+
+                while(true){
+                    System.out.print("\nEnter an integer to move around the shelf (0: Exit, Now at book: " + bookIndex + "): ");
+                    if (input.hasNextInt()){
+                        intRes = input.nextInt();
+                    } else{
+                        System.out.println("\nThat is not a valid input. Please try again.");
+                        input = new Scanner(System.in);
+                        continue;
+                    }
+
+                    if (intRes < 0){
+                        try{
+                            for (int i = bookIndex; i >= bookIndex - Math.abs(intRes) - 1; i--){
+                                if (bookIndex - Math.abs(intRes) - 1 <= 0 && i == 0){
+                                    System.out.println("!BOF has been reached!");
+                                }
+                                System.out.println(greatLibrary[libraryIndex][i].toString());
+                            }
+                            bookIndex -= Math.abs(intRes) - 1;
+                        } catch (ArrayIndexOutOfBoundsException e){
+                            bookIndex = 0;
+                        }
+                    } else if (intRes > 0){
+                        try{
+                            for (int i = bookIndex; i <= bookIndex + Math.abs(intRes) - 1; i++){
+                                System.out.println(greatLibrary[libraryIndex][i].toString());
+                            }
+                            bookIndex += Math.abs(intRes) - 1;
+                        } catch (ArrayIndexOutOfBoundsException e){
+                            System.out.println("!EOF has been reached!");
+                            bookIndex = greatLibrary[libraryIndex].length - 1;
+                        }
+
+                    } else{
+                        System.out.println("Returning to main menu.");
+                        break;
+                    }
+                }
+
+            } else if(stringRes.equalsIgnoreCase("x")){
+                System.out.println("\nNow exiting... Thank you for browsing Kab's great library.");
+                input.close();
+                System.exit(0);
+            }else {
+                System.out.println("\nThat is not a valid option. Please try again.");
+                continue;
+            }
         }
 
     }
