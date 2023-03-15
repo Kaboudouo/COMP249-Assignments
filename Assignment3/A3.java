@@ -616,6 +616,8 @@ public class A3 {
         String stringRes = "";
         int intRes = -1;
 
+        System.out.println("Welcome to Kab's amazing library! by Noa Chayer");
+
         while(true){
             System.out.println("\n-------------------------");
             System.out.println("        Main Menu       ");
