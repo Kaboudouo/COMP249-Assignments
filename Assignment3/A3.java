@@ -11,6 +11,12 @@ import java.io.BufferedInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+// -----------------------------------------------------
+// Assignment 3
+// Written by: Noa Chayer 40223439
+// Due: March 24 2023
+// -----------------------------------------------------
+
 class TooFewFieldsException extends Exception{
     public TooFewFieldsException(String record){
        // System.out.println("\nThis record has too FEW fields: \n" + record);
@@ -56,11 +62,6 @@ class BadIsbn13Exception extends Exception{
         // System.out.println("\nBad ISBN-13: \n" + record);
     }
 }
-// class GeneralSemanticsException extends Exception{
-//     public GeneralSemanticsException(String record){
-//         // System.out.println("Invalid semantics: \n" + record);
-//     }
-// }
 
 class Book implements java.io.Serializable{
     String title;
@@ -226,6 +227,7 @@ public class A3 {
         }
     }
 
+    // Prints syntax-faulty records to syntax error file
     static void writeToSyntaxFile(String book, String path, String msg){
         if (!oldPath.equals(path)){
             oldPath = path;
@@ -235,7 +237,7 @@ public class A3 {
         syntaxWriter.println("Record: " + book + "\n");
     }
 
-    // Prints to syntax error file
+    // Prints record to appropriate genre file using switch()
     static void writeToCsv(String book, String genre){
         switch (genre){
             case "CCB":
@@ -268,6 +270,7 @@ public class A3 {
         }
     }
 
+    // Returns string[] representing each fields for a given record
     static String[] createFields(String book, String path){
         String[] fields = {"", "", "", "", "", ""};
         int quoteCount = 0;
@@ -313,14 +316,14 @@ public class A3 {
         return fields;
     }
 
+
     static void validateSyntax(String book, String path){
 
         String[] fields;
-
         fields = createFields(book, path);
         
+        // Checks if a field of a given record is empty
         String missingFieldMsg = "Missing";
-        // "first" boolean is purely for esthetics
         try {
             boolean first = true;
             for (int i = 0; i < fields.length; i++){
@@ -358,6 +361,7 @@ public class A3 {
                 throw new MissingFieldException(book);
             }
 
+            // Compares record genre to list of valid genre
             boolean validGenre = false;
             String[] genreCodes = {"CCB","HCB", "MTV", "MRB", "NEB", "OTR", "SSM", "TPA"};
             for (int i = 0; i < genreCodes.length; i++){
@@ -380,6 +384,7 @@ public class A3 {
         }
     }
 
+    // Books in the given path are read and sent to validation
     static void checkBooks(String path){
         Scanner bookScanner = null;
 
@@ -406,9 +411,9 @@ public class A3 {
     }
 
     static void do_part1(){
-        // Pull file from path
         manipulateWriters(1);
 
+        // Pull book path from input file name
         Scanner scanner = null;
         try {
             InputStream inputStream = new FileInputStream("./Assignment3/docs/part1_input_file_names.txt");
@@ -419,7 +424,7 @@ public class A3 {
             System.exit(0);
         }
 
-        // Instantiate Books Path Array
+        // Instantiates book path array and sends to checkbooks()
         int n =  scanner.nextInt();
         String[] input_files = new String[n];
         scanner.nextLine();
@@ -432,9 +437,9 @@ public class A3 {
 
         scanner.close();
         manipulateWriters(0);
-        //checkBooks("books2010.csv.txt");
     }
 
+    // Prints semantically erroneous books to the semantics error file
     static void writeToSemanticFile(String book, String path, String msg){
         if (!oldPath.equals(path)){
             oldPath = path;
@@ -444,7 +449,8 @@ public class A3 {
         semanticWriter.println("Record: " + book + "\n");
     }
 
-    static void writeToSer(String book, String[] fields){
+    // Creates new Book object with passed-in fields, selects the appropriate ObjectOutputStream based on genre, and prints the object
+    static void writeToSer(String[] fields){
         String genre = fields[4];
         Book bookObj = new Book(fields[0], fields[1], fields[3], fields[4], Double.parseDouble(fields[2]), Integer.parseInt(fields[5]));
         ObjectOutputStream out = null;
@@ -496,13 +502,10 @@ public class A3 {
     // Validates each field of the syntactically correct books
     static void validateFields(String book, String originPath){
         String[] fields = createFields(book, originPath);
-        // String superMsg = "Invalid";
-
         try{
             // Price check
             double price = Float.parseFloat(fields[2]);
             if (price < 0){
-                //superMsg += " Price";
                 throw new BadPriceException(book);
             }
 
@@ -514,7 +517,6 @@ public class A3 {
                     sum += Math.abs(i-10) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 11 != 0){
-                    //superMsg += " ISBN-10";
                     throw new BadIsbn10Exception(book);
                 }
             } else if (isbn.length() == 13){
@@ -522,7 +524,6 @@ public class A3 {
                     sum += ((i%2 * 2) + 1) * Character.getNumericValue(isbn.charAt(i));
                 }
                 if (sum % 10 != 0){
-                    //superMsg += " ISBN-13";
                     throw new BadIsbn13Exception(book);
                 }
             }
@@ -530,17 +531,11 @@ public class A3 {
             //Year check
             int year = Integer.parseInt(fields[5]);
             if (year < 1995 || year > 2010){
-                //superMsg += " Year";
                 throw new BadYearException(book);
             }
 
-            // Creates error message including all semantic errors instead of just the thrown one
-            // if (superMsg != "Invalid"){
-            //     throw new GeneralSemanticsException(book);
-            // }
-
             // Book is now certainly syntactically and semantically correct
-            writeToSer(book, fields);
+            writeToSer(fields);
 
         }catch (BadPriceException e){
             writeToSemanticFile(book, originPath, "Invalid Price");
@@ -559,6 +554,7 @@ public class A3 {
         String[] pathsToOpen = {"Cartoons_Comics.csv", "Hobbies_Collectibles.csv", "Movies_TV_Books.csv", "Music_Radio_Books.csv", "Nostalgia_Electronic_Books.csv", "Old_Time_Radio.csv", "Sport_Memorabilia.csv", "Trains_Planes_Automobiles.csv"};
         Scanner scanner = null;
 
+        // Opens every output files from part 1 and validates the books within
         for (int i = 0; i < pathsToOpen.length; i++){
             try {
                 InputStream inputStream = new FileInputStream("./Assignment3/output_part1/" + pathsToOpen[i]);
@@ -581,6 +577,7 @@ public class A3 {
         manipulateWriters(2);
     }
 
+    // Esthetics
     static String space(int n){
         String spacing = "";
         for (int i = 0; i < n; i++){
@@ -594,6 +591,7 @@ public class A3 {
         Book[][] greatLibrary = {new Book[librarySize[0]],  new Book[librarySize[1]], new Book[librarySize[2]], new Book[librarySize[3]], new Book[librarySize[4]], new Book[librarySize[5]], new Book[librarySize[6]], new Book[librarySize[7]]};
         String[] pathsToOpen = {"Cartoons_Comics.csv.ser", "Hobbies_Collectibles.csv.ser", "Movies_TV_Books.csv.ser", "Music_Radio_Books.csv.ser", "Nostalgia_Electronic_Books.csv.ser", "Old_Time_Radio.csv.ser", "Sport_Memorabilia.csv.ser", "Trains_Planes_Automobiles.csv.ser"};
 
+        // Open every output file from part 2 and store books into greatLibrary[][]
         ObjectInputStream in = null;
         try{
             for (int i = 0; i < greatLibrary.length; i++){
@@ -681,6 +679,7 @@ public class A3 {
                         continue;
                     }
 
+                    // Book navigation logic; loops from src (bookIndex) to des (bookIndex +- |input value| - 1)
                     if (intRes < 0){
                         try{
                             for (int i = bookIndex; i >= bookIndex - Math.abs(intRes) - 1; i--){
@@ -703,13 +702,11 @@ public class A3 {
                             System.out.println("!EOF has been reached!");
                             bookIndex = greatLibrary[libraryIndex].length - 1;
                         }
-
                     } else{
                         System.out.println("Returning to main menu.");
                         break;
                     }
                 }
-
             } else if(stringRes.equalsIgnoreCase("x")){
                 System.out.println("\nNow exiting... Thank you for browsing Kab's great library.");
                 input.close();
