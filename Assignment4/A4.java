@@ -1,35 +1,57 @@
 package Assignment4;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 
 class Book{
     String title; 
-    String autjor;
+    String author;
     double price;
-    long ISBN;
+    long isbn;
     String genre;
     int year;
+
+    public Book(String _title, String _author, double _price, long _isbn, String _genre, int _year){
+        title = _title;
+        author = _author;
+        price = _price;
+        isbn = _isbn;
+        genre = _genre;
+        year = _year;
+    }
+
+    public String toString(){
+        return title + ", " + author + ", " + price + ", " + isbn + ", " + genre + ", " + year;
+    }
 }
 
 
 class BookList{
-    private class Node{
+    private class Node<Type>{
         private Book b;
-        private Book next;
+        private Node<Book> next;
     
-        public Node(Book _b){
+        public Node(Book _b, Node<Book> _next){
             b = _b;
+            next = _next;
         }
     }
     
-   Node head;
+   Node<Book> head;
 
     public BookList(){
         head = null; 
     }
 
     public void addToStart(Book b){
-        head = new Node(b);
+        head = new Node<Book>(b, head);
     }
 
     public void storeRecordsByYear(int yr){
@@ -68,8 +90,93 @@ class BookList{
 }
 
 public class A4 {
-    ArrayList arrLst = new ArrayList<Book>();
-    BookList bkLst = new BookList();
+
+    static String[] createFields(String book){
+        String[] fields = {"", "", "", "", "", ""};
+        int fieldCount = 0;
+
+        for (char c : book.toCharArray()){
+            
+            // Counts how many commas have passed, thus counting the number of fields except if comma is in quoted title
+            if (c == ','){
+                fieldCount++;
+                continue;
+            }
+
+            // Eliminates extra spaces past author field as to not cause type errors later
+            if (c == ' ' && fieldCount > 1){
+                continue;
+            }
+
+            // Reconstruct field from char
+            fields[fieldCount] += String.valueOf(c);
+        }
+
+        return fields;
+    }
+
+    static void checkBooks(ArrayList<Book> arrList, BookList bkList){
+        Scanner bookScanner = null;
+
+        try {
+            InputStream bookStream = new FileInputStream("./Assignment4/Books.txt");
+            new BufferedInputStream(bookStream);
+            bookScanner = new Scanner (bookStream);
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Could not find file");
+            return;
+        }
+
+        // Quickly checks if the next line is empty, then validates
+        while (bookScanner.hasNextLine()){
+            String newLine = bookScanner.nextLine();
+            if (newLine == ""){
+                continue;
+            }
+            String[] newFields = createFields(newLine);
+
+            // Year validation 
+            int year = Integer.parseInt(newFields[5]);
+            Book newBook = new Book(newFields[0], newFields[1], Double.parseDouble(newFields[2]), Long.parseLong(newFields[3]), newFields[4], year);
+            if (year > 2024){
+                arrList.add(newBook);
+                continue;
+            }
+            bkList.addToStart(newBook);
+        }
+
+        bookScanner.close();
+    }
+
+    public static void printYrErr(ArrayList<Book> arrList){
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new FileOutputStream("./Assignment4/YearErr.txt"));
+        } catch (IOException e){
+            System.out.println("Encountered IO error.");
+            System.exit(0);
+        }
+
+        for (Book book : arrList){
+            pw.println(book.toString());
+        }
+
+        pw.close();
+    }
+
+    public  static void main(String[] args){
+        ArrayList<Book> arrLst = new ArrayList<Book>();
+        BookList bkLst = new BookList();
+
+        checkBooks(arrLst, bkLst);
+
+        if (arrLst.size() != 0){
+            printYrErr(arrLst);
+        }
+
+    }
+
 
     //File Extraction
 
