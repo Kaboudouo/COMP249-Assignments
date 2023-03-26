@@ -55,7 +55,25 @@ class BookList{
     }
 
     public void storeRecordsByYear(int yr){
+        Node<Book> tmp = head;
+        PrintWriter pw = null;
 
+        while (tmp != null){
+            if ((int) tmp.b.year == (int) yr){
+                if (pw == null){
+                    try {
+                        pw = new PrintWriter( new FileOutputStream("./Assignment4/SortedByYear/"+ yr + ".txt"));
+                    } catch (IOException e){
+                        System.out.println("Encountered IO error.");
+                        System.exit(0);
+                    }
+                }
+                pw.println(tmp.b.toString());
+            }
+            tmp = tmp.next;
+        }
+
+        pw.close();
     }
 
     public boolean insertBefore(long isbn, Book b){
@@ -154,7 +172,6 @@ public class A4 {
         try {
             pw = new PrintWriter(new FileOutputStream("./Assignment4/YearErr.txt"));
         } catch (IOException e){
-            System.out.println("Encountered IO error.");
             System.exit(0);
         }
 
@@ -171,14 +188,16 @@ public class A4 {
 
         checkBooks(arrLst, bkLst);
 
+        // Creates YearErr and prints books (if any)
         if (arrLst.size() != 0){
-            printYrErr(arrLst);
+            //printYrErr(arrLst);
         }
+
+        bkLst.storeRecordsByYear(1905);
+        
+
+        //UI
 
     }
 
-
-    //File Extraction
-
-    //UI
 }
