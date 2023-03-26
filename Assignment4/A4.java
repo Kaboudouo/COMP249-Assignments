@@ -76,16 +76,49 @@ class BookList{
         pw.close();
     }
 
-    public boolean insertBefore(long isbn, Book b){
-        return true;
+    public boolean insertBefore(long _isbn, Book b){
+        if ((long) head.b.isbn == (long) _isbn){
+            addToStart(b);
+            return true;
+        }
+
+        Node<Book> prev = null;
+        Node<Book> curr = head;
+
+        while (curr != null && (long) curr.b.isbn != (long) _isbn){
+            prev = curr;
+            curr = curr.next;
+        }
+        if (curr != null){
+            prev.next = new Node<Book>(b, curr);
+            return true;
+        }
+        return false;
     }
 
     public boolean insertBetween(long isbn1, long isbn2, Book b){
-        return true;
+        Node<Book> prev = head;
+        Node<Book> curr = head.next;
+
+        while (curr != null && prev != null){
+            if ((long) curr.b.isbn == (long) isbn2 && (long) prev.b.isbn == (long) isbn1){
+                prev.next = new Node<Book>(b, curr);
+                return true;
+            }else {
+                prev = curr;
+                curr = curr.next;
+            }
+        }
+        return false;
     }
 
     public void displayContent(){
-
+        Node<Book> tmp = head;
+        while (tmp != null){
+            System.out.println(tmp.b.toString() + " ==>");
+            tmp = tmp.next;
+        }
+        System.out.println("===> head");
     }
 
     public boolean delConsecutiveRepeatedRecords(){
@@ -146,13 +179,15 @@ public class A4 {
             return;
         }
 
-        // Quickly checks if the next line is empty, then validates
+        ArrayList<Book> tempList = new ArrayList<Book>();
         while (bookScanner.hasNextLine()){
             String newLine = bookScanner.nextLine();
             if (newLine == ""){
                 continue;
             }
+
             String[] newFields = createFields(newLine);
+
 
             // Year validation 
             int year = Integer.parseInt(newFields[5]);
@@ -161,7 +196,12 @@ public class A4 {
                 arrList.add(newBook);
                 continue;
             }
-            bkList.addToStart(newBook);
+            tempList.add(newBook);
+        }
+
+        // Created new list just to add nodes in 'correct' order
+        for (int i = tempList.size() - 1; i >= 0; i--){
+            bkList.addToStart(tempList.get(i));
         }
 
         bookScanner.close();
@@ -192,9 +232,6 @@ public class A4 {
         if (arrLst.size() != 0){
             //printYrErr(arrLst);
         }
-
-        bkLst.storeRecordsByYear(1905);
-        
 
         //UI
 
