@@ -234,7 +234,21 @@ class BookList{
     }
 
     public void commit(){
+        PrintWriter pw = null;
+        try{
+            pw = new PrintWriter(new FileOutputStream("./Assignment4/Update_Books.txt"));
+        } catch (IOException e){
+            System.out.println("IO Exception occured.");
+            System.exit(0);
+        }
 
+        Node<Book> tmp = head;
+        while(tmp != null){
+            pw.println(tmp.b.toString());
+            tmp = tmp.next;
+        }
+
+        pw.close();
     }
 
 
@@ -333,13 +347,10 @@ public class A4 {
             //printYrErr(arrLst);
         }
 
-        bkLst.delConsecutiveRepeatedRecords();
-        bkLst.displayContent();
-        System.out.println("\n\n");
-        bkLst.swap(1557835659, 1574670913);
-        bkLst.displayContent();
-        //UI
 
+        bkLst.delConsecutiveRepeatedRecords();
+        bkLst.swap(1879103272, 879101490);
+        bkLst.commit();
     }
 
 }
