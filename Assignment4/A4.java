@@ -162,11 +162,75 @@ class BookList{
     }
 
     public BookList extractAuthList(String aut){
-        return new BookList();
+
+        Node<Book> tmpNode = head;
+        BookList autBkLst = new BookList();
+        ArrayList<Book> tmpLst = new ArrayList<Book>();
+
+
+        while (tmpNode != null){
+            if (tmpNode.b.author.equals(aut)){
+                tmpLst.add(tmpNode.b);
+            }
+            tmpNode = tmpNode.next;
+        }
+
+        for (int i = tmpLst.size()-1; i >=0; i--){
+            autBkLst.addToStart(tmpLst.get(i));
+        }
+
+        return autBkLst;
     }
 
     public boolean swap(long isbn1, long isbn2){
-        return true;
+        Node<Book> prevS1 = null;
+        Node<Book> swap1 = head;
+        Node<Book> prevS2 = null;
+        Node<Book> swap2 = head;
+
+        boolean foundSwap1 = false;
+        boolean foundSwap2 = false;
+
+        while ((!foundSwap1 || !foundSwap2) && swap1 != null && swap2 != null){
+            if ((long) swap1.b.isbn == (long) isbn1){
+                foundSwap1 = true;
+            } else{
+                prevS1 = swap1;
+                swap1 = swap1.next;
+            }
+
+            if ((long) swap2.b.isbn == (long) isbn2){
+                foundSwap2 = true;
+            } else{
+                prevS2 = swap2;
+                swap2 = swap2.next;
+            }
+        }
+
+        if (foundSwap1 && foundSwap2){
+            if (prevS1 != null){
+                prevS1.next = swap2;
+            }
+
+            if(prevS2 != null){
+                prevS2.next = swap1;
+            }
+
+            Node<Book> tmp = swap2.next;
+            swap2.next = swap1.next;
+            swap1.next = tmp;
+
+            // If either of the concerned nodes are the head, they need to be switched
+            if (swap1 == head){
+                head = swap2;
+            } else if (swap2 == head){
+                head = swap1;
+            }
+
+            return true;
+        } else{
+            return false;
+        }
     }
 
     public void commit(){
@@ -269,8 +333,10 @@ public class A4 {
             //printYrErr(arrLst);
         }
 
-
         bkLst.delConsecutiveRepeatedRecords();
+        bkLst.displayContent();
+        System.out.println("\n\n");
+        bkLst.swap(1557835659, 1574670913);
         bkLst.displayContent();
         //UI
 
