@@ -30,6 +30,15 @@ class Book{
     public String toString(){
         return title + ", " + author + ", " + price + ", " + isbn + ", " + genre + ", " + year;
     }
+
+    public boolean equals(Object obj){
+        if (this == obj) {return true;}
+        if (obj == null) {return false;}
+        if (obj.getClass() != this.getClass()) {return false;}
+
+        Book otherBook = (Book) obj;
+        return this.title.equals(otherBook.title) && this.author.equals(otherBook.author) && this.price == otherBook.price && this.isbn == otherBook.isbn && this.genre.equals(otherBook.genre) && this.year == otherBook.year;
+    }
 }
 
 
@@ -122,7 +131,34 @@ class BookList{
     }
 
     public boolean delConsecutiveRepeatedRecords(){
-        return true;
+        Node<Book> comparator = head;
+        Node<Book> comparee = head.next;
+        boolean delRecords = false;
+        boolean looped = false;
+
+        while (comparator != null && comparee != null){
+            while (comparator.b.equals(comparee.b)){
+                if (comparee.next == null){
+                    comparee = head;
+                    looped = true;
+                } else{
+                    comparee = comparee.next;
+                }
+                delRecords = true;
+            }
+
+            if (looped){
+                comparator.next = null;
+                head = comparee;
+            } else{
+                comparator.next = comparee;
+            }
+
+            comparator = comparator.next;
+            comparee = comparee.next;
+        }
+
+        return delRecords;
     }
 
     public BookList extractAuthList(String aut){
@@ -233,6 +269,9 @@ public class A4 {
             //printYrErr(arrLst);
         }
 
+
+        bkLst.delConsecutiveRepeatedRecords();
+        bkLst.displayContent();
         //UI
 
     }
