@@ -2,6 +2,7 @@ package Assignment4;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.FileOutputStream;
@@ -169,7 +170,7 @@ class BookList{
 
 
         while (tmpNode != null){
-            if (tmpNode.b.author.equals(aut)){
+            if (tmpNode.b.author.equalsIgnoreCase(aut)){
                 tmpLst.add(tmpNode.b);
             }
             tmpNode = tmpNode.next;
@@ -336,21 +337,228 @@ public class A4 {
         pw.close();
     }
 
+    // Esthetics
+    static String printEquals(int n){
+        String deco = "";
+        for (int i = 0; i < n; i++){
+            deco += "=";
+        }
+        return deco;
+    }
+
+    static void printDisplay(String msg){
+        System.out.println("Here are the contents of the list " + msg);
+        System.out.println("=================================" + printEquals(msg.length()));
+        
+    }
+
+    static Book createNewBook(Scanner in){
+        String title;
+        String author;
+        double price;
+        long isbn;
+        String genre;
+        int year;
+
+        System.out.println("\nAll right I am now going to ask you to fill out the book's fields...");
+        System.out.print("What is the book title?: ");
+        title = in.next();
+        System.out.print("\nWho's the author?: ");
+        author = in.next();
+        while (true){
+            System.out.print("\nHow much does it cost?: ");
+            try {
+                price = in.nextDouble();
+                break;
+            } catch (Exception e){
+                in.nextLine();
+                System.out.println("\nSorry, that was not a valid input, please try again.");
+                continue;
+            }
+        }
+        while (true){
+            System.out.print("\nWhat is this book's ISBN?: ");
+            try {
+                isbn = in.nextLong();
+                break;
+            } catch (Exception e){
+                in.nextLine();
+                System.out.println("\nSorry, that was not a valid input, please try again.");
+                continue;
+            }
+        }
+        System.out.print("\nWhat is the book's genre?: ");
+        genre = in.next();
+        while (true){
+            System.out.println("\nFinally, in what year was the book published?: ");
+            try {
+                year = in.nextInt();
+                break;
+            } catch (Exception e){
+                in.nextLine();
+                System.out.println("\nSorry, that was not a valid input, please try again.");
+                continue;
+            }
+        }
+
+        return new Book(title, author, price, isbn, genre, year);
+    }
+
+    static void startUI(BookList bkLst){
+        Scanner in = new Scanner(System.in);
+        int response = 0;
+        printDisplay("");
+        while(true){
+            // bkLst.displayContent();
+            // System.out.println("What would you like to do with the list of books?");
+            // System.out.println("    1) Give me a year # and I would extract all records of that year and store them in a file for that year;");
+            // System.out.println("    2) Ask me to delete all consecutive repeated records;");
+            // System.out.println("    3) Give me an author name and I will create a new list with the records of this author and display them;");
+            // System.out.println("    4) Give me an ISBN number and a Book object, and I will insert Node with the book before the record with this ISBN;");
+            // System.out.println("    5) Give me 2 ISBN numbers and a Book object, and I will insert a Node between them, if I find them!");
+            // System.out.println("    6) Give me 2 ISBN numbers and I will swap them in the list for rearrangement of records; of course if they exist!");
+            // System.out.println("    7) Tell me to COMMIT! Your command is my wish. I will commit your list to a file called Updated_Books;");
+            // System.out.println("    8) Tell me to STOP TALKING. Remember, if you do not commit, I will not!");
+
+            System.out.print("Enter your selection: ");
+
+            try{
+                response = in.nextInt();
+                in.nextLine();
+                if (response < 1 || response > 8){
+                    System.out.println("\nSorry, that is not a valid option, please try again.");
+                    continue;
+                }
+
+            } catch (Exception e){
+                in.nextLine();
+                System.out.println("\nSorry, that was not a valid input, please try again.");
+                continue;
+            }
+            
+            if (response == 1){
+                while (true){
+                    System.out.print("\nPlease enter the year for which you would like to extract: ");
+                    try{
+                        response = in.nextInt();
+                        if (response > 2024){
+                            System.out.println("\nSorry, that is not a valid year, please try again.");
+                            in.nextLine();
+                            continue;
+                        }
+                        bkLst.storeRecordsByYear(1904);
+                        System.out.println("\nFile for books from " + response + " has been created.");
+                        break;
+                    } catch (Exception e){
+                        System.out.println(e.getMessage());
+                        System.out.println("\nSorry, that was not a valid input, please try again.");
+                        continue;
+                    }
+                }
+            } else if (response == 2){
+                bkLst.delConsecutiveRepeatedRecords();
+                System.out.println("\nAll consecutive records have been deleted.");
+                printDisplay(" after deleting consecutive duplicate records");
+            } else if (response == 3){
+                while(true){
+                    System.out.print("\nPlease provide the author's name (Space sensitive): ");
+                    if (in.hasNextLine()){
+                        String author = in.nextLine();
+                        System.out.println("\nHere's what I could find for " + author + ".");
+                        bkLst.extractAuthList(author).displayContent();
+                        in.nextLine();
+                        break;
+                    } else{
+                        System.out.println("\nSorry, I didn't quite catch that, please try again.");
+                    }
+                }
+            } else if (response == 4){
+                long isbnToCheck;
+                while(true){
+                    System.out.print("\nPlease enter the ISBN of the book you would like to succeed this new entry: ");
+
+                    try{
+                        isbnToCheck = in.nextLong();
+                        break;
+                    } catch (Exception e){
+                        in.nextLine();
+                        System.out.println("\nSorry, that was not a valid input, please try again.");
+                        continue;
+                    }
+                }    
+                bkLst.insertBefore(isbnToCheck, createNewBook(in));
+                System.out.println("\nYou new book entry has been inserted.");
+                printDisplay(" after inserting the new record");
+            } else if (response == 5){
+                long isbnToCheck1;
+                    long isbnToCheck2;
+                    while(true){
+                        System.out.print("\nPlease enter the ISBNs of the books you would like to both precede and succeed this new entry: ");
+                        try{
+                            isbnToCheck1 = in.nextLong();
+                            isbnToCheck2 = in.nextLong();
+                            break;
+                        } catch (Exception e){
+                            in.nextLine();
+                            in.nextLine();
+                            System.out.println("\nSorry, that was not a valid input, please try again.");
+                            continue;
+                        }
+                    }      
+                    bkLst.insertBetween(isbnToCheck1, isbnToCheck2, createNewBook(in));
+                    System.out.println("\nYou new book entry has been inserted.");
+                    printDisplay(" after inserting the new record");
+            } else if (response == 6){
+                long isbnToSwap1;
+                    long isbnToSwap2;
+                    while(true){
+                        System.out.print("\nPlease enter the ISBNs of the books you would like to swap: ");
+                        try{
+                            isbnToSwap1 = in.nextLong();
+                            isbnToSwap2 = in.nextLong();
+                            break;
+                        } catch (Exception e){
+                            in.nextLine();
+                            in.nextLine();
+                            System.out.println("\nSorry, that was not a valid input, please try again.");
+                            continue;
+                        }
+                    }      
+                    if (bkLst.swap(isbnToSwap1, isbnToSwap2)){
+                        System.out.println("\nBooks have been swaped.");
+                        printDisplay(" after swaping records");
+                    } else{
+                        System.out.println("\nCouldn't swap the requested books.");
+                        printDisplay("");
+                    }
+            } else if (response == 7){
+                bkLst.commit();
+                System.out.println("\nChanges to the book list have been commited.");
+                printDisplay(" that is now commited");
+            } else{
+                System.out.println("\nNow exiting program...");
+                break;
+            }     
+        }
+
+        System.out.println("\nThank you for using Kab's amazing book list manager!");
+        in.close();
+        System.exit(0);
+
+    }
+
     public  static void main(String[] args){
         ArrayList<Book> arrLst = new ArrayList<Book>();
         BookList bkLst = new BookList();
 
         checkBooks(arrLst, bkLst);
 
-        // Creates YearErr and prints books (if any)
         if (arrLst.size() != 0){
             //printYrErr(arrLst);
+            System.out.println("YearError File Created.");
         }
 
-
-        bkLst.delConsecutiveRepeatedRecords();
-        bkLst.swap(1879103272, 879101490);
-        bkLst.commit();
+        startUI(bkLst);
     }
 
 }
