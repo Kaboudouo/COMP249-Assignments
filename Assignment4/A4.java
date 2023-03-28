@@ -45,6 +45,8 @@ class Book{
         Book otherBook = (Book) obj;
         return this.title.equals(otherBook.title) && this.author.equals(otherBook.author) && this.price == otherBook.price && this.isbn == otherBook.isbn && this.genre.equals(otherBook.genre) && this.year == otherBook.year;
     }
+    
+    // Accessors and Mutators are unecessary for our purposes
 }
 
 
@@ -69,6 +71,7 @@ class BookList{
         head = new Node<Book>(b, head);
     }
 
+    // Compares current node's book year and compares it to wanted year, stores if equal
     public void storeRecordsByYear(int yr){
         Node<Book> tmp = head;
         PrintWriter pw = null;
@@ -91,6 +94,7 @@ class BookList{
         pw.close();
     }
 
+    // Looks for Node with given ISBN, inserts new node in the previous node's next
     public boolean insertBefore(long _isbn, Book b){
         if ((long) head.b.isbn == (long) _isbn){
             addToStart(b);
@@ -111,6 +115,7 @@ class BookList{
         return false;
     }
 
+    // Similar to "insert before" except ISBN of the previous node is also checked
     public boolean insertBetween(long isbn1, long isbn2, Book b){
         Node<Book> prev = head;
         Node<Book> curr = head.next;
@@ -127,6 +132,7 @@ class BookList{
         return false;
     }
 
+    // Runs through list and prints
     public void displayContent(){
         Node<Book> tmp = head;
         while (tmp != null){
@@ -136,6 +142,7 @@ class BookList{
         System.out.println("===> head");
     }
 
+    // Pair of nodes traverse the list, if they are =, increments latter node until no longer =, links former node to latter node
     public boolean delConsecutiveRepeatedRecords(){
         Node<Book> comparator = head;
         Node<Book> comparee = head.next;
@@ -167,6 +174,7 @@ class BookList{
         return delRecords;
     }
 
+    // Runs through list while comparing author
     public BookList extractAuthList(String aut){
 
         Node<Book> tmpNode = head;
@@ -188,6 +196,7 @@ class BookList{
         return autBkLst;
     }
 
+    // Two pointers run through the list until they find nodes with correct ISBN -> Changes needed next attributes to swap
     public boolean swap(long isbn1, long isbn2){
         Node<Book> prevS1 = null;
         Node<Book> swap1 = head;
@@ -239,6 +248,7 @@ class BookList{
         }
     }
 
+    // Prints current list to text file
     public void commit(){
         PrintWriter pw = null;
         try{
@@ -286,6 +296,7 @@ public class A4 {
         return fields;
     }
 
+    // Reads books from file, create booklist with them
     static void checkBooks(ArrayList<Book> arrList, BookList bkList){
         Scanner bookScanner = null;
 
@@ -357,6 +368,7 @@ public class A4 {
         
     }
 
+    // Prompts the user for all neded fields and return Book object
     static Book createNewBook(Scanner in){
         String title;
         String author;
@@ -422,7 +434,7 @@ public class A4 {
         printDisplay("");
         while(true){
             bkLst.displayContent();
-            System.out.println("What would you like to do with the list of books?");
+            System.out.println("\nWhat would you like to do with the list of books?");
             System.out.println("    1) Give me a year # and I would extract all records of that year and store them in a file for that year;");
             System.out.println("    2) Ask me to delete all consecutive repeated records;");
             System.out.println("    3) Give me an author name and I will create a new list with the records of this author and display them;");
@@ -448,6 +460,7 @@ public class A4 {
                 continue;
             }
             
+            // Different Operations
             if (response == 1){
                 while (true){
                     System.out.print("\nPlease enter the year for which you would like to extract: ");
@@ -509,30 +522,28 @@ public class A4 {
                 printDisplay(" after inserting the new record");
             } else if (response == 5){
                 long isbnToCheck1;
-                    long isbnToCheck2;
-                    while(true){
-                        System.out.print("\nPlease enter the ISBNs of the books you would like to both precede and succeed this new entry: ");
-                        try{
-                            isbnToCheck1 = in.nextLong();
-                            isbnToCheck2 = in.nextLong();
-                            in.nextLine();
-                            break;
-                        } catch (Exception e){
-                            in.nextLine();
-                            in.nextLine();
-                            System.out.println("\nSorry, that was not a valid input, please try again.");
-                            continue;
-                        }
-                    }      
-                    if (bkLst.insertBetween(isbnToCheck1, isbnToCheck2, createNewBook(in))){
-                        System.out.println("\nYou new book entry has been inserted.");
-                        printDisplay(" after inserting the new record");
-                    } else{
-                        System.out.println("\nSorry, I couldn't find any books by those ISBNs so I couldn't insert your new entry.");
-                        printDisplay("");
+                long isbnToCheck2;
+                while(true){
+                    System.out.print("\nPlease enter the ISBNs of the books you would like to both precede and succeed this new entry: ");
+                    try{
+                        isbnToCheck1 = in.nextLong();
+                        isbnToCheck2 = in.nextLong();
+                        in.nextLine();
+                        break;
+                    } catch (Exception e){
+                        in.nextLine();
+                        in.nextLine();
+                        System.out.println("\nSorry, that was not a valid input, please try again.");
+                        continue;
                     }
-
-
+                }      
+                if (bkLst.insertBetween(isbnToCheck1, isbnToCheck2, createNewBook(in))){
+                    System.out.println("\nYou new book entry has been inserted.");
+                    printDisplay(" after inserting the new record");
+                } else{
+                    System.out.println("\nSorry, I couldn't find any books by those ISBNs so I couldn't insert your new entry.");
+                    printDisplay("");
+                }
             } else if (response == 6){
                 long isbnToSwap1;
                     long isbnToSwap2;
@@ -577,14 +588,14 @@ public class A4 {
         ArrayList<Book> arrLst = new ArrayList<Book>();
         BookList bkLst = new BookList();
 
+        System.out.println("Welcome to Kab's amazing book list manager!\n");
+
         checkBooks(arrLst, bkLst);
 
         if (arrLst.size() != 0){
-            //printYrErr(arrLst);
+            printYrErr(arrLst);
             System.out.println("YearError File Created.");
         }
-
-        System.out.println("Welcome to Kab's amazing book list manager!\n");
 
         startUI(bkLst);
     }
